@@ -1,15 +1,12 @@
 import React from 'react'
 import logo from './commons/images/icon.png';
+import AuthenticationService from './login/service/authentication-service.js'
 
 import {
-    DropdownItem,
-    DropdownMenu,
-    DropdownToggle,
     Nav,
     Navbar,
     NavbarBrand,
     NavLink,
-    UncontrolledDropdown
 } from 'reactstrap';
 
 const textStyle = {
@@ -25,23 +22,14 @@ const NavigationBar = () => (
                      height={"35"} />
             </NavbarBrand>
             <Nav className="mr-auto" navbar>
-                <NavLink style={textStyle} href="/login">Login</NavLink>
-
-                {/*<UncontrolledDropdown nav inNavbar>*/}
-                {/*    <DropdownToggle style={textStyle} nav caret>*/}
-                {/*       Menu*/}
-                {/*    </DropdownToggle>*/}
-                {/*    <DropdownMenu right >*/}
-
-                {/*        <DropdownItem>*/}
-                {/*            <NavLink href="/login">Login</NavLink>*/}
-                {/*        </DropdownItem>*/}
-
-
-                {/*    </DropdownMenu>*/}
-
-                {/*</UncontrolledDropdown>*/}
+                {!AuthenticationService.isUserLoggedIn() && <NavLink style={textStyle} href="/login">Login</NavLink>}
             </Nav>
+
+            <Nav className="navbar-nav navbar-collapse justify-content-end" navbar>
+                {AuthenticationService.isUserLoggedIn() &&<NavLink onClick={AuthenticationService.logout} style={textStyle} href="/" >Logout</NavLink>}
+            </Nav>
+
+
         </Navbar>
     </div>
 );

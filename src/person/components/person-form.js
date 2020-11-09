@@ -1,5 +1,5 @@
 import React from 'react';
-import validate from "./validators/person-validators";
+import validate from "../../commons/validators/validators";
 import Button from "react-bootstrap/Button";
 import * as API_USERS from "../api/person-api";
 import APIResponseErrorMessage from "../../commons/errorhandling/api-response-error-message";

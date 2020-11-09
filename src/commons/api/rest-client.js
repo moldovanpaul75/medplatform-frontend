@@ -3,10 +3,10 @@ function performRequest(request, callback){
         .then(
             function(response) {
                 if (response.ok) {
-                    response.json().then(json => callback(json, response.status,null));
+                    response.json().then(json => callback(json, response.status, null));
                 }
                 else {
-                    response.json().then(err => callback(null, response.status,  err));
+                    response.json().then(err => callback(null, response.status, err));
                 }
             })
         .catch(function (err) {
@@ -15,6 +15,24 @@ function performRequest(request, callback){
         });
 }
 
+
+function performRequestTextResponse(request, callback){
+    fetch(request)
+        .then(
+          function(response){
+              if(response.ok) {
+                  response.text().then(data => callback(data, response.status, null));
+              }else{
+                  response.text().then(err => callback(null, response.status, err));
+              }
+          })
+        .catch(function (err){
+           callback(null, 1, err);
+        });
+}
+
+
 module.exports = {
-    performRequest
+    performRequest,
+    performRequestTextResponse
 };

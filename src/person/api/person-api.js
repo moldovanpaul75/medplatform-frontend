@@ -32,7 +32,6 @@ function postPerson(user, callback){
         },
         body: JSON.stringify(user)
     });
-
     console.log("URL: " + request.url);
 
     RestApiClient.performRequest(request, callback);
