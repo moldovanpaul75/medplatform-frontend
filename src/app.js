@@ -10,6 +10,7 @@ import styles from './commons/styles/project-style.css';
 import PersonForm from "./person/components/person-form";
 import AuthenticatedRoute from "./route/authenticated-route";
 import RoleRoute from "./route/role-route";
+import ProfileForm from "./commons/profile/profile-form";
 
 
 class App extends React.Component {
@@ -45,6 +46,25 @@ class App extends React.Component {
                             role='ROLE_doctor'
                             path='/person'
                             component={PersonForm}
+                        />
+
+
+                        <RoleRoute
+                            role='ROLE_doctor'
+                            path='/doctor'
+                            component={() => <ProfileForm path='/doctor'/>}
+                        />
+
+                        <RoleRoute
+                            role='ROLE_patient'
+                            path='/patient'
+                            component={() => <ProfileForm path='/patient'/>}
+                        />
+
+                        <RoleRoute
+                            role='ROLE_caregiver'
+                            path='/caregiver'
+                            component={() => <ProfileForm path='/caregiver'/>}
                         />
 
                         <Route component={ErrorPage} />

@@ -6,11 +6,11 @@ import validate from "../commons/validators/validators";
 import * as API_LOGIN from "./api/login-api";
 import AuthenticationService from "./service/authentication-service";
 
+
 class LoginComponent extends React.Component{
 
     constructor(props) {
         super(props);
-
 
         this.state = {
             errorStatus: 0,
@@ -74,24 +74,23 @@ class LoginComponent extends React.Component{
     loginUser(user){
         return API_LOGIN.postLogin(user, (result, status, error) => {
            if(result != null && (status === 200 || status === 201)) {
-               console.log("Successfully sign in: " + JSON.stringify(result.username) + " " + JSON.stringify(result.roles));
+               console.log("Successfully sign in: " + JSON.stringify(result.username) + " " + JSON.stringify(result.roles) + JSON.stringify(result.id));
 
-                AuthenticationService.registerLogin(result.username, result.token, result.roles)
+               AuthenticationService.registerLogin(result.username, result.token, result.roles, result.id)
 
+               console.log(result.id)
                this.setState(({
                    errorStatus: 0,
                    error: null,
                    hasLoginFailed: false
                }));
 
-
                this.props.history.push("/");
-
            } else {
                this.setState(({
                    errorStatus: status,
                    error: error,
-                   hasLoginFailed:true
+                   hasLoginFailed:true,
                }));
            }
         });
@@ -104,7 +103,6 @@ class LoginComponent extends React.Component{
             password: this.state.formControls.password.value
         };
         this.loginUser(user_object);
-
     }
 
 
@@ -149,10 +147,10 @@ class LoginComponent extends React.Component{
                       </Col>
                   </Row>
 
-                  {
-                      this.state.errorStatus > 0 &&
-                      <APIResponseErrorMessage errorStatus={this.state.errorStatus} error={this.state.error}/>
-                  }
+                  {/*{*/}
+                  {/*    this.state.errorStatus > 0 &&*/}
+                  {/*    <APIResponseErrorMessage errorStatus={this.state.errorStatus} error={this.state.error}/>*/}
+                  {/*}*/}
               </div>
           </div>
         );

@@ -1,6 +1,6 @@
 import {HOST} from '../../commons/hosts';
 import RestApiClient from "../../commons/api/rest-client";
-
+import AuthenticationService from "../service/authentication-service"
 
 const endpoint = {
     login: '/auth'
@@ -11,9 +11,9 @@ function getCurrentUser(callback) {
     const headers = new Headers({
         'Content-Type': 'application/json',
     })
-    const token = localStorage.getItem('token')
-    if(token){
-        headers.append('Authorization', 'Bearer ' + token)
+
+    if(AuthenticationService.isUserLoggedIn()){
+        headers.append('Authorization', AuthenticationService.createJWTToken())
     }
 
     let request = new Request(HOST.backend_api + endpoint.login, {

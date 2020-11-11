@@ -3,14 +3,21 @@ function performRequest(request, callback){
         .then(
             function(response) {
                 if (response.ok) {
-                    response.json().then(json => callback(json, response.status, null));
+                    response.json().then(json => callback(json, response.status, null))
+                        .catch(error=> {
+                            console.log("Successful request, Could not parse body as json", error);
+                            callback(null, response.status, null)
+                        });
                 }
                 else {
-                    response.json().then(err => callback(null, response.status, err));
+                    response.json().then(err => callback(null, response.status, err))
+                        .catch(error=> {
+                            console.log("Successful request, Could not parse body as json", error);
+                            callback(null, response.status, null)
+                        });
                 }
             })
         .catch(function (err) {
-            //catch any other unexpected error, and set custom code for error = 1
             callback(null, 1, err)
         });
 }
@@ -34,5 +41,5 @@ function performRequestTextResponse(request, callback){
 
 module.exports = {
     performRequest,
-    performRequestTextResponse
+    performRequestTextResponse,
 };

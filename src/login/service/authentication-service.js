@@ -2,8 +2,6 @@ class AuthenticationService {
 
     isUserLoggedIn() {
         const token = localStorage.getItem('token')
-        const username = localStorage.getItem('username')
-        console.log("authenticated: " + username);
 
         if (token) {
             return true;
@@ -11,24 +9,33 @@ class AuthenticationService {
         return false;
     }
 
-    registerLogin(username, token, role){
+    registerLogin(username, token, role, id){
         localStorage.setItem('token', token);
         localStorage.setItem('username', username);
         localStorage.setItem('role', role);
+        localStorage.setItem('userId', id);
     }
 
 
     getUserRole(){
-        const role = localStorage.getItem('role')
-        console.log(role)
-        return role
+        const role = localStorage.getItem('role');
+        return role;
     }
 
+    getUserId(){
+        const id = localStorage.getItem('userId');
+        return id;
+    }
+
+    createJWTToken() {
+        return 'Bearer ' + localStorage.getItem('token');
+    }
 
     logout() {
         localStorage.removeItem('token');
         localStorage.removeItem('username');
         localStorage.removeItem('role');
+        localStorage.removeItem('userId');
     }
 
 }

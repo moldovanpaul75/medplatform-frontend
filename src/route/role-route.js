@@ -18,5 +18,4 @@ class RoleRoute extends Component {
     }
 }
 
-
 export default RoleRoute
