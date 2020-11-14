@@ -28,13 +28,13 @@ const NavigationBar = () => (
                      height={"50"} />
             </NavbarBrand>
 
-            {AuthenticationService.isUserLoggedIn() && !(AuthenticationService.getUserRole() === "ROLE_caregiver") &&
+            {AuthenticationService.isUserLoggedIn() && (AuthenticationService.getUserRole() === "ROLE_doctor") &&
             <UncontrolledDropdown nav inNavbar>
                 <DropdownToggle style={textStyle} nav caret>
                     Menu
                 </DropdownToggle>
 
-                {AuthenticationService.getUserRole() === "ROLE_doctor" &&
+
                 <DropdownMenu left>
 
                     <DropdownItem>
@@ -61,19 +61,8 @@ const NavigationBar = () => (
                         <NavLink href="/medical_records">Medication Plans</NavLink>
                     </DropdownItem>
                 </DropdownMenu>
-                }
 
-                {AuthenticationService.getUserRole() === "ROLE_patient" &&
-                <DropdownMenu left>
-                    <DropdownItem>
-                        <NavLink href="/medication_plan">Medication Plan</NavLink>
-                    </DropdownItem>
 
-                    <DropdownItem>
-                        <NavLink href="/medical_record">Medical Record</NavLink>
-                    </DropdownItem>
-                </DropdownMenu>
-                }
 
             </UncontrolledDropdown>
             }
@@ -82,6 +71,9 @@ const NavigationBar = () => (
                 {AuthenticationService.isUserLoggedIn() && AuthenticationService.getUserRole() === "ROLE_doctor" &&<NavLink style={textStyle} href="/doctor" >Profile</NavLink>}
 
                 {AuthenticationService.isUserLoggedIn() && AuthenticationService.getUserRole() === "ROLE_patient" &&<NavLink style={textStyle} href="/patient" >Profile</NavLink>}
+                {AuthenticationService.isUserLoggedIn() && AuthenticationService.getUserRole() === "ROLE_patient" &&<NavLink style={textStyle} href="/medication_plan">Medication Plan</NavLink>}
+                {AuthenticationService.isUserLoggedIn() && AuthenticationService.getUserRole() === "ROLE_patient" &&<NavLink style={textStyle} href="/medical_record">Medical Record</NavLink>}
+
 
                 {AuthenticationService.isUserLoggedIn() && AuthenticationService.getUserRole() === "ROLE_caregiver" &&<NavLink style={textStyle} href="/caregiver" >Profile</NavLink>}
                 {AuthenticationService.isUserLoggedIn() && AuthenticationService.getUserRole() === "ROLE_caregiver" &&<NavLink style={textStyle} href="/patients" >Patients</NavLink>}
