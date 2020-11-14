@@ -24,4 +24,4 @@ class TableForm extends React.Component{
     }
 }
 
-export default TableForm
+export default TableForm;

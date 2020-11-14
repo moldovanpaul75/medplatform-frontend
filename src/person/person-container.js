@@ -83,7 +83,7 @@ class PersonContainer extends React.Component {
                     <br/>
                     <Row>
                         <Col sm={{size: '8', offset: 1}}>
-                            {<PersonTable tableData = {this.state.tableData}/>}
+                            {this.state.isLoaded && <PersonTable tableData = {this.state.tableData}/>}
                             {this.state.errorStatus > 0 && <APIResponseErrorMessage
                                                             errorStatus={this.state.errorStatus}
                                                             error={this.state.error}

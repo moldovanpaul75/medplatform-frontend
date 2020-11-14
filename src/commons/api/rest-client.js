@@ -38,8 +38,24 @@ function performRequestTextResponse(request, callback){
         });
 }
 
+function performRequestWithoutResponse(request, callback){
+    fetch(request)
+        .then(
+            function(response){
+                if(response.ok) {
+                    response.then(callback(response.status, null));
+                }else{
+                    response.json.then(err => callback(response.status, err));
+                }
+            })
+        .catch(function (err){
+            callback(null, 1, err);
+        });
+}
+
 
 module.exports = {
     performRequest,
     performRequestTextResponse,
+    performRequestWithoutResponse,
 };

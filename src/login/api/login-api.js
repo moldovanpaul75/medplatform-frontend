@@ -10,7 +10,7 @@ const endpoint = {
 function getCurrentUser(callback) {
     const headers = new Headers({
         'Content-Type': 'application/json',
-    })
+    });
 
     if(AuthenticationService.isUserLoggedIn()){
         headers.append('Authorization', AuthenticationService.createJWTToken())

@@ -35,7 +35,7 @@ const NavigationBar = () => (
                 </DropdownToggle>
 
 
-                <DropdownMenu left>
+                <DropdownMenu>
 
                     <DropdownItem>
                         <NavLink href="/caregivers">Caregivers</NavLink>
@@ -61,8 +61,6 @@ const NavigationBar = () => (
                         <NavLink href="/medical_records">Medication Plans</NavLink>
                     </DropdownItem>
                 </DropdownMenu>
-
-
 
             </UncontrolledDropdown>
             }

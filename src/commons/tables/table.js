@@ -75,7 +75,7 @@ class Table extends Component {
 
         return (
             <div style={{
-                height: innerHeight * 0.4,
+                height: innerHeight * 0.5,
                 width: innerWidth * 0.8
             }}>
                 <Row>
