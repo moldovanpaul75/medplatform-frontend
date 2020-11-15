@@ -16,11 +16,13 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import TableForm from "../../../commons/tables/table-form";
 
-import * as API from "../api/medication-api";
+import * as API_COMMON from "../../../commons/api/common-api";
 
-const fakeData=[
-    { id: 1, name: 'name1', type: 'test', sideEffectList: 'address1'}
-    ]
+
+const endpoint = {
+    medications: '/medication',
+    sideEffects: '/side_effect'
+};
 
 
 class MedicationContainer extends React.Component{
@@ -30,7 +32,10 @@ class MedicationContainer extends React.Component{
         this.toggleForm = this.toggleForm.bind(this);
         this.reload = this.reload.bind(this);
         this.state = {
-            selected: false,
+            addSideEffect: false,
+            updateSideEffect: false,
+            addMedication: false,
+            updateMedication: false,
             collapseForm: false,
             medicationTableData: [],
             sideEffectTableData: [],
@@ -42,32 +47,40 @@ class MedicationContainer extends React.Component{
     }
 
     componentDidMount() {
-        this.fetchMedications();
-        this.fetchSideEffects();
+        this.fetchItems(endpoint.medications, ['medicationTableData', 'medicationsLoaded'])
+        this.fetchItems(endpoint.sideEffects, ['sideEffectTableData', 'sideEffectsLoaded'])
     }
 
-    toggleForm() {
-        this.setState({selected: !this.state.selected});
+
+    toggleForm(key){
+        let state = !this.state[key];
+        this.setState({
+            [key] : state,
+        })
     }
+
 
     reload() {
         this.setState({
             medicationsLoaded: false,
             sideEffectsLoaded: false
         });
-        this.toggleForm();
-        this.fetchMedications();
-        this.fetchSideEffects();
+        this.toggleForm('addSideEffect');
+        this.toggleForm('addMedication');
+        this.toggleForm('updateSideEffect');
+        this.toggleForm('updateMedication');
+        this.fetchItems(endpoint.medications, ['medicationTableData', 'medicationsLoaded'])
+        this.fetchItems(endpoint.sideEffects, ['sideEffectTableData', 'sideEffectsLoaded'])
     }
 
 
-    fetchMedications(){
-        return API.getMedications((result, status, err) =>{
+    fetchItems(endpoint, states){
+        return API_COMMON.getItems(endpoint, (result, status, err) =>{
             if (result !== null && status === 200){
-                this.setState(({
-                    medicationTableData: result,
-                    medicationsLoaded: true
-                })) ;
+                this.setState({
+                   [states[0]]: result,
+                   [states[1]]: true
+                });
             } else {
                 this.setState(({
                     errorStatus: status,
@@ -78,24 +91,9 @@ class MedicationContainer extends React.Component{
     }
 
 
-    fetchSideEffects(){
-        return API.getSideEffects((result, status, err) =>{
-            if (result !== null && status === 200){
-                this.setState(({
-                    sideEffectTableData: result,
-                    sideEffectsLoaded: true
-                })) ;
-            } else {
-                this.setState(({
-                    errorStatus: status,
-                    error: err
-                }));
-            }
-        });
-    }
 
-    handleDeleteMedication(medication){
-        return API.deleteMedication(medication, (status, err) =>{
+    handleDelete(endpoint, itemId){
+        return API_COMMON.deleteItem(endpoint, itemId, (status, err) =>{
             if (status === 200 || status === 201){
                 window.location.reload(false);
             } else {
@@ -104,21 +102,6 @@ class MedicationContainer extends React.Component{
                     error: err
                 }));
             }
-        });
-    }
-
-
-
-    handleDeleteSideEffect(sideEffect){
-        return API.deleteSideEffect(sideEffect, (status, err) =>{
-           if (status === 200 || status === 201){
-                window.location.reload(false);
-           } else {
-               this.setState(({
-                   errorStatus: status,
-                   error: err
-               }));
-           }
         });
     }
 
@@ -133,7 +116,7 @@ class MedicationContainer extends React.Component{
                     <br/>
                     <Row>
                         <Col sm={{size:'8', offset: 1}}>
-                            <Button color="primary">Add medication</Button>
+                            <Button color="primary" onClick={() => this.toggleForm('addMedication')}>Add medication</Button>
                         </Col>
                     </Row>
                     <br/>
@@ -170,8 +153,10 @@ class MedicationContainer extends React.Component{
                                                                             Header: '',
                                                                             Cell: row => (
                                                                                 <div>
-                                                                                    <Button >{<EditIcon/>}</Button>&nbsp;
-                                                                                    <Button onClick={() => this.handleDeleteMedication(row.original.id)}>{<DeleteIcon/>}</Button>
+                                                                                    <Button color="primary"
+                                                                                            onClick={() => this.toggleForm('updateMedication')}
+                                                                                    >{<EditIcon/>}</Button>&nbsp;&nbsp;
+                                                                                    <Button onClick={() => this.handleDelete(endpoint.medications, row.original.id)}>{<DeleteIcon/>}</Button>
                                                                                 </div>
                                                                             )
                                                                         }
@@ -200,7 +185,7 @@ class MedicationContainer extends React.Component{
                     <br/>
                     <Row>
                         <Col sm={{size:'8', offset: 1}}>
-                            <Button color="primary">Add side effect</Button>
+                            <Button color="primary" onClick={() => this.toggleForm('addSideEffect')}>Add side effect</Button>
                         </Col>
 
                     </Row>
@@ -227,8 +212,10 @@ class MedicationContainer extends React.Component{
                                                     Header: '',
                                                     Cell: row => (
                                                         <div>
-                                                            <Button >{<EditIcon/>}</Button>&nbsp;
-                                                            <Button onClick={() => this.handleDeleteSideEffect(row.original.id)}>{<DeleteIcon/>}</Button>
+                                                            <Button color="primary"
+                                                                    onClick={() => this.toggleForm('updateSideEffect')}
+                                                            >{<EditIcon/>}</Button>&nbsp;&nbsp;
+                                                            <Button onClick={() => this.handleDelete(endpoint.sideEffects, row.original.id)}>{<DeleteIcon/>}</Button>
                                                         </div>
                                                     )
                                                 }
@@ -247,6 +234,42 @@ class MedicationContainer extends React.Component{
                         </Col>
                     </Row>
                 </Card>
+
+                 <Modal isOpen={this.state.addSideEffect} toggle={() => this.toggleForm('addSideEffect')}
+                        className={this.props.className} sizze="lg">
+                     <ModalHeader toggle={() => this.toggleForm('addSideEffect')}> Add side effect: </ModalHeader>
+                     <ModalBody>
+                         <p>to do</p>
+                     </ModalBody>
+                 </Modal>
+
+
+                 <Modal isOpen={this.state.addMedication} toggle={() => this.toggleForm('addMedication')}
+                        className={this.props.className} sizze="lg">
+                     <ModalHeader toggle={() => this.toggleForm('addMedication')}> Add medication: </ModalHeader>
+                     <ModalBody>
+                         <p>to do</p>
+                     </ModalBody>
+                 </Modal>
+
+
+                 <Modal isOpen={this.state.updateSideEffect} toggle={() => this.toggleForm('updateSideEffect')}
+                        className={this.props.className} sizze="lg">
+                     <ModalHeader toggle={() => this.toggleForm('updateSideEffect')}> Update side effect: </ModalHeader>
+                     <ModalBody>
+                         <p>to do</p>
+                     </ModalBody>
+                 </Modal>
+
+
+                 <Modal isOpen={this.state.updateMedication} toggle={() => this.toggleForm('updateMedication')}
+                        className={this.props.className} sizze="lg">
+                     <ModalHeader toggle={() => this.toggleForm('updateMedication')}> Update medication: </ModalHeader>
+                     <ModalBody>
+                         <p>to do</p>
+                     </ModalBody>
+                 </Modal>
+
             </div>
         )
     }
