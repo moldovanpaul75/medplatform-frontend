@@ -42,8 +42,19 @@ function deleteItem(endpoint, id, callback){
 }
 
 
+function saveItem(endpoint, method, item, callback){
+    let request = new Request(HOST.backend_api + endpoint, {
+        method: method,
+        headers: buildHeaders(),
+        body: JSON.stringify(item)
+    });
+    RestApiClient.performRequest(request, callback);
+}
+
+
 export {
     getProfile,
     getItems,
-    deleteItem
+    deleteItem,
+    saveItem
 };

@@ -14,7 +14,9 @@ import _ from "lodash";
 
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
+
 import TableForm from "../../../commons/tables/table-form";
+import ModalForm from "../../../commons/modal/modal-form";
 
 import * as API_COMMON from "../../../commons/api/common-api";
 
@@ -89,7 +91,6 @@ class MedicationContainer extends React.Component{
             }
         });
     }
-
 
 
     handleDelete(endpoint, itemId){
@@ -239,7 +240,37 @@ class MedicationContainer extends React.Component{
                         className={this.props.className} sizze="lg">
                      <ModalHeader toggle={() => this.toggleForm('addSideEffect')}> Add side effect: </ModalHeader>
                      <ModalBody>
-                         <p>to do</p>
+                        <ModalForm type={'1'} formControls = {
+                            [
+                                {
+                                    id: 'name',
+                                    fieldName: 'nameField',
+                                    value: '',
+                                    placeholder: 'Enter side effect name...',
+                                    valid: false,
+                                    touched: false,
+                                    message: 'Invalid name',
+                                    validationRules: {
+                                        minLength: 3,
+                                        isRequired: true
+                                    }
+                                }   ,
+                                {
+                                    id: 'details',
+                                    fieldName: 'detailsField',
+                                    value: '',
+                                    placeholder: 'Details about the side effect...',
+                                    valid: false,
+                                    touched: false,
+                                    message: 'Too short',
+                                    validationRules: {
+                                        minLength: 3,
+                                        isRequired: true
+                                    }
+                                }   ,
+                            ]
+                        }
+                        />
                      </ModalBody>
                  </Modal>
 

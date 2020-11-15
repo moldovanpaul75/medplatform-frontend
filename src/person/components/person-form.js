@@ -7,7 +7,6 @@ import {Col, Row} from "reactstrap";
 import { FormGroup, Input, Label} from 'reactstrap';
 
 
-
 class PersonForm extends React.Component {
 
     constructor(props) {
@@ -171,11 +170,11 @@ class PersonForm extends React.Component {
                     />
                 </FormGroup>
 
-                    <Row>
-                        <Col sm={{size: '4', offset: 8}}>
-                            <Button type={"submit"} disabled={!this.state.formIsValid} onClick={this.handleSubmit}>  Submit </Button>
-                        </Col>
-                    </Row>
+                <Row>
+                    <Col sm={{size: '4', offset: 8}}>
+                        <Button type={"submit"} disabled={!this.state.formIsValid} onClick={this.handleSubmit}>  Submit </Button>
+                    </Col>
+                </Row>
 
                 {
                     this.state.errorStatus > 0 &&
