@@ -32,6 +32,7 @@ class MedicationContainer extends React.Component{
     constructor(props){
         super(props);
         this.toggleForm = this.toggleForm.bind(this);
+        this.toggleForm2 = this.toggleForm2.bind(this);
         this.reload = this.reload.bind(this);
         this.state = {
             addSideEffect: false,
@@ -41,6 +42,7 @@ class MedicationContainer extends React.Component{
             collapseForm: false,
             medicationTableData: [],
             sideEffectTableData: [],
+            itemToUpdate: [],
             medicationsLoaded: false,
             sideEffectsLoaded: false,
             errorStatus: 0,
@@ -61,16 +63,21 @@ class MedicationContainer extends React.Component{
         })
     }
 
+    toggleForm2(key, item){
+        let state = !this.state[key];
+        this.setState({
+            [key] : state,
+            itemToUpdate: item,
+        })
+    }
 
-    reload() {
+
+    reload(key) {
         this.setState({
             medicationsLoaded: false,
             sideEffectsLoaded: false
         });
-        this.toggleForm('addSideEffect');
-        this.toggleForm('addMedication');
-        this.toggleForm('updateSideEffect');
-        this.toggleForm('updateMedication');
+        this.toggleForm(key);
         this.fetchItems(endpoint.medications, ['medicationTableData', 'medicationsLoaded'])
         this.fetchItems(endpoint.sideEffects, ['sideEffectTableData', 'sideEffectsLoaded'])
     }
@@ -214,7 +221,7 @@ class MedicationContainer extends React.Component{
                                                     Cell: row => (
                                                         <div>
                                                             <Button color="primary"
-                                                                    onClick={() => this.toggleForm('updateSideEffect')}
+                                                                    onClick={() => this.toggleForm2('updateSideEffect', row.original)}
                                                             >{<EditIcon/>}</Button>&nbsp;&nbsp;
                                                             <Button onClick={() => this.handleDelete(endpoint.sideEffects, row.original.id)}>{<DeleteIcon/>}</Button>
                                                         </div>
@@ -240,35 +247,40 @@ class MedicationContainer extends React.Component{
                         className={this.props.className} sizze="lg">
                      <ModalHeader toggle={() => this.toggleForm('addSideEffect')}> Add side effect: </ModalHeader>
                      <ModalBody>
-                        <ModalForm type={'1'} formControls = {
-                            [
-                                {
-                                    id: 'name',
-                                    fieldName: 'nameField',
-                                    value: '',
-                                    placeholder: 'Enter side effect name...',
-                                    valid: false,
-                                    touched: false,
-                                    message: 'Invalid name',
-                                    validationRules: {
-                                        minLength: 3,
-                                        isRequired: true
-                                    }
-                                }   ,
-                                {
-                                    id: 'details',
-                                    fieldName: 'detailsField',
-                                    value: '',
-                                    placeholder: 'Details about the side effect...',
-                                    valid: false,
-                                    touched: false,
-                                    message: 'Too short',
-                                    validationRules: {
-                                        minLength: 3,
-                                        isRequired: true
-                                    }
-                                }   ,
-                            ]
+                        <ModalForm type={'0'}
+                                   endpoint ={endpoint.sideEffects}
+                                   reloadHandler ={() => this.reload('addSideEffect')}
+                                   formControls = {
+                                        [
+                                            {
+                                                id: 'name',
+                                                fieldName: 'nameField',
+                                                value: '',
+                                                placeholder: 'Enter side effect name...',
+                                                valid: false,
+                                                touched: false,
+                                                display: true,
+                                                message: 'Invalid name',
+                                                validationRules: {
+                                                    minLength: 3,
+                                                    isRequired: true
+                                                }
+                                            }   ,
+                                            {
+                                                id: 'details',
+                                                fieldName: 'detailsField',
+                                                value: '',
+                                                placeholder: 'Details about the side effect...',
+                                                valid: false,
+                                                touched: false,
+                                                display: true,
+                                                message: 'Too short',
+                                                validationRules: {
+                                                    minLength: 3,
+                                                    isRequired: true
+                                                }
+                                            }   ,
+                                        ]
                         }
                         />
                      </ModalBody>
@@ -288,7 +300,48 @@ class MedicationContainer extends React.Component{
                         className={this.props.className} sizze="lg">
                      <ModalHeader toggle={() => this.toggleForm('updateSideEffect')}> Update side effect: </ModalHeader>
                      <ModalBody>
-                         <p>to do</p>
+                         <ModalForm type={'1'}
+                                    endpoint ={endpoint.sideEffects}
+                                    reloadHandler ={() => this.reload('updateSideEffect')}
+                                    formControls = {
+                                        [
+                                            {
+                                                id: 'id',
+                                                fieldName: 'idField',
+                                                value: this.state.itemToUpdate.id,
+                                                display: false,
+                                            },
+                                            {
+                                                id: 'name',
+                                                fieldName: 'nameField',
+                                                value: this.state.itemToUpdate.name,
+                                                placeholder: 'Rename side effect...',
+                                                valid: true,
+                                                touched: false,
+                                                display: true,
+                                                message: 'Invalid name',
+                                                validationRules: {
+                                                    minLength: 3,
+                                                    isRequired: true
+                                                }
+                                            }   ,
+                                            {
+                                                id: 'details',
+                                                fieldName: 'detailsField',
+                                                value: this.state.itemToUpdate.details,
+                                                placeholder: 'Details about the side effect...',
+                                                valid: true,
+                                                touched: false,
+                                                display: true,
+                                                message: 'Too short',
+                                                validationRules: {
+                                                    minLength: 3,
+                                                    isRequired: true
+                                                }
+                                            }   ,
+                                        ]
+                                    }
+                         />
                      </ModalBody>
                  </Modal>
 

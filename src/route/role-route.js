@@ -6,7 +6,7 @@ class RoleRoute extends Component {
     render() {
         if(AuthenticationService.isUserLoggedIn()) {
             const role = AuthenticationService.getUserRole()
-             if(this.props.role === role){
+             if(this.props.userRole === role){
                  return <Route {...this.props}/>
              }
              else{

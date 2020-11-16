@@ -24,7 +24,8 @@ const NavigationBar = () => (
     <div>
         <Navbar color="dark" light expand="md">
             <NavbarBrand href="/">
-                <img src={logo} width={"50"}
+                <img alt={"logo"}
+                    src={logo} width={"50"}
                      height={"50"} />
             </NavbarBrand>
 

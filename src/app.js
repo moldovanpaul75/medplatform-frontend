@@ -45,40 +45,40 @@ class App extends React.Component {
                         />
 
                         <RoleRoute
-                            role='ROLE_doctor'
+                            userRole="ROLE_doctor"
                             path='/person'
                             component={PersonContainer}
                         />
 
 
                         <RoleRoute
-                            role='ROLE_doctor'
+                            userRole="ROLE_doctor"
                             path='/doctor'
                             component={() => <ProfileForm path='/doctor'/>}
                         />
 
 
                         <RoleRoute
-                            role='ROLE_doctor'
+                            userRole="ROLE_doctor"
                             path='/medications'
                             component={MedicationContainer}
                         />
 
 
                         <RoleRoute
-                            role='ROLE_patient'
+                            userRole="ROLE_patient"
                             path='/patient'
                             component={() => <ProfileForm path='/patient'/>}
                         />
 
                         <RoleRoute
-                            role='ROLE_patient'
+                            userRole="ROLE_patient"
                             path='/medical_record'
                             component={() => <MedicalRecordForm />}
                         />
 
                         <RoleRoute
-                            role='ROLE_caregiver'
+                            userRole="ROLE_caregiver"
                             path='/caregiver'
                             component={() => <ProfileForm path='/caregiver'/>}
                         />
