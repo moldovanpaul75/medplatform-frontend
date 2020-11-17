@@ -12,6 +12,8 @@ import {
     Label,
     Button,
 } from 'reactstrap';
+import { Multiselect } from 'multiselect-react-dropdown';
+
 
 class ModalForm extends React.Component {
 
@@ -25,17 +27,21 @@ class ModalForm extends React.Component {
             errorStatus: 0,
             error: null,
 
-            formIsValid: true,
+            formIsValid: false,
 
             endpoint: this.props.endpoint,
             type: this.props.type,
 
             formControls: this.props.formControls,
+            dropDownOptions: this.props.dropDownOptions,
+            dropDownSelectedValues: this.props.dropDownSelectedValues,
         };
 
         this.handleChange = this.handleChange.bind(this);
         this.handleAdd = this.handleAdd.bind(this);
         this.handleUpdate = this.handleUpdate.bind(this);
+        this.onSelect = this.onSelect.bind(this);
+        this.onRemove = this.onRemove.bind(this);
     }
 
 
@@ -68,24 +74,62 @@ class ModalForm extends React.Component {
 
 
     createFormControls(){
-        return this.state.formControls.map((item, index) =>
-            item.display &&
-            <FormGroup key={index}
-                       id={item.id}
-                       >
-                <Label for={item.fieldName}> {item.id}: </Label>
-                <Input name={item.id} id={item.fieldName} placeholder={item.placeholder}
-                       onChange={(event) => this.handleChange(event, index)}
-                       defaultValue={item.value}
-                       touched={item.touched? 1 : 0}
-                       valid={item.valid}
-                       required
-                />
-                {item.touched && !item.valid &&
+        if(this.state.formControls !== undefined) {
+            return this.state.formControls.map((item, index) =>
+                item.display &&
+                <FormGroup key={index}
+                           id={item.id}
+                >
+                    <Label for={item.fieldName}> {item.id}: </Label>
+                    <Input name={item.id} id={item.fieldName} placeholder={item.placeholder}
+                           onChange={(event) => this.handleChange(event, index)}
+                           defaultValue={item.value}
+                           touched={item.touched ? 1 : 0}
+                           valid={item.valid}
+                           required
+                    />
+                    {item.touched && !item.valid &&
                     <div className={"error-message"}> * {item.message}</div>}
-            </FormGroup>
-        );
+                </FormGroup>
+            );
+        }
     }
+
+    createDropDown(){
+        if(this.state.dropDownOptions !== undefined) {
+            return <Multiselect
+                options={this.state.dropDownOptions}
+                selectedValues={this.state.dropDownSelectedValues.values}
+                onSelect={this.onSelect}
+                onRemove={this.onRemove}
+                displayValue="name"
+            />
+        }
+    }
+
+
+    onSelect(selectedList, selectedItem) {
+        const items = this.state.dropDownSelectedValues
+        items.values.push(selectedItem)
+
+        this.setState({
+            dropDownSelectedValues: items
+        })
+    }
+
+    onRemove(selectedList, removedItem) {
+        const items = this.state.dropDownSelectedValues
+        const index = items.values.indexOf(removedItem);
+
+        if(index !== -1){
+            items.values.splice(index, 1);
+        }
+
+        this.setState({
+            dropDownSelectedValues: items
+        })
+    }
+
 
     registerItem(item, method){
         return API.saveItem(this.state.endpoint, method, item, (result, status, error)=> {
@@ -101,12 +145,16 @@ class ModalForm extends React.Component {
     }
 
 
-
     handleAdd() {
-        const item = this.state.formControls.reduce(
+        let item = this.state.formControls.reduce(
             (obj, item) => Object.assign(obj, {[item.id]: item.value}), {}
         );
 
+        if(this.state.dropDownSelectedValues !== undefined) {
+            item[this.state.dropDownSelectedValues.name] = this.state.dropDownSelectedValues.values;
+        }
+
+        console.log(item)
         this.registerItem(item, 'POST');
     }
 
@@ -115,7 +163,11 @@ class ModalForm extends React.Component {
             (obj, item) => Object.assign(obj, {[item.id]: item.value}), {}
         );
 
-        console.log(item);
+        if(this.state.dropDownSelectedValues !== undefined) {
+            item[this.state.dropDownSelectedValues.name] = this.state.dropDownSelectedValues.values;
+        }
+
+        console.log(item)
         this.registerItem(item, 'PUT');
     }
 
@@ -124,10 +176,11 @@ class ModalForm extends React.Component {
         return(
             <div>
                 {this.createFormControls()}
+                {this.createDropDown()}
 
                 <Row>
                     <Col sm={{size: '4', offset: 8}}>
-                {(this.state.type === '0') && <Button onClick={this.handleAdd}> Add </Button>}
+                {(this.state.type === '0') && <Button disabled={!this.state.formIsValid} onClick={this.handleAdd}> Add </Button>}
                 {(this.state.type === '1') && <Button onClick={this.handleUpdate}> Update </Button>}
                     </Col>
                 </Row>

@@ -162,7 +162,7 @@ class MedicationContainer extends React.Component{
                                                                             Cell: row => (
                                                                                 <div>
                                                                                     <Button color="primary"
-                                                                                            onClick={() => this.toggleForm('updateMedication')}
+                                                                                            onClick={() => this.toggleForm2('updateMedication', row.original)}
                                                                                     >{<EditIcon/>}</Button>&nbsp;&nbsp;
                                                                                     <Button onClick={() => this.handleDelete(endpoint.medications, row.original.id)}>{<DeleteIcon/>}</Button>
                                                                                 </div>
@@ -291,7 +291,48 @@ class MedicationContainer extends React.Component{
                         className={this.props.className} sizze="lg">
                      <ModalHeader toggle={() => this.toggleForm('addMedication')}> Add medication: </ModalHeader>
                      <ModalBody>
-                         <p>to do</p>
+                         <ModalForm type={'0'}
+                                    endpoint ={endpoint.medications}
+                                    reloadHandler={() => this.reload('addMedications')}
+                                    formControls={
+                                        [
+                                            {
+                                                id: 'name',
+                                                fieldName: 'nameField',
+                                                value: '',
+                                                placeholder: 'Enter medication name...',
+                                                valid: false,
+                                                touched: false,
+                                                display: true,
+                                                message: 'Invalid name',
+                                                validationRules: {
+                                                    minLength: 3,
+                                                    isRequired: true
+                                                }
+                                            }   ,
+                                            {
+                                                id: 'type',
+                                                fieldName: 'typeField',
+                                                value: '',
+                                                placeholder: 'Enter medication type...',
+                                                valid: false,
+                                                touched: false,
+                                                display: true,
+                                                message: 'Too short',
+                                                validationRules: {
+                                                    minLength: 3,
+                                                    isRequired: true
+                                                }
+                                            }   ,
+                                        ]
+                                    }
+                                    dropDownOptions={this.state.sideEffectTableData}
+                                    dropDownSelectedValues={{
+                                            name: 'sideEffectList',
+                                            values: [],
+                                         }
+                                    }
+                         />
                      </ModalBody>
                  </Modal>
 
@@ -350,7 +391,54 @@ class MedicationContainer extends React.Component{
                         className={this.props.className} sizze="lg">
                      <ModalHeader toggle={() => this.toggleForm('updateMedication')}> Update medication: </ModalHeader>
                      <ModalBody>
-                         <p>to do</p>
+                         <ModalForm type={'1'}
+                                    endpoint ={endpoint.medications}
+                                    reloadHandler={() => this.reload('updateMedications')}
+                                    formControls={
+                                        [
+                                            {
+                                                id: 'id',
+                                                fieldName: 'idField',
+                                                value: this.state.itemToUpdate.id,
+                                                display: false,
+                                            },
+                                            {
+                                                id: 'name',
+                                                fieldName: 'nameField',
+                                                value: this.state.itemToUpdate.name,
+                                                placeholder: 'Enter medication name...',
+                                                valid: true,
+                                                touched: false,
+                                                display: true,
+                                                message: 'Invalid name',
+                                                validationRules: {
+                                                    minLength: 3,
+                                                    isRequired: true
+                                                }
+                                            }   ,
+                                            {
+                                                id: 'type',
+                                                fieldName: 'typeField',
+                                                value: this.state.itemToUpdate.type,
+                                                placeholder: 'Enter medication type...',
+                                                valid: true,
+                                                touched: false,
+                                                display: true,
+                                                message: 'Too short',
+                                                validationRules: {
+                                                    minLength: 3,
+                                                    isRequired: true
+                                                }
+                                            }   ,
+                                        ]
+                                    }
+                                    dropDownOptions={this.state.sideEffectTableData}
+                                    dropDownSelectedValues={{
+                                        name: 'sideEffectList',
+                                        values: this.state.itemToUpdate.sideEffectList,
+                                    }
+                                    }
+                         />
                      </ModalBody>
                  </Modal>
 
