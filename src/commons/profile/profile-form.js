@@ -15,6 +15,8 @@ class ProfileForm extends React.Component {
             error: null,
             failedToGetProfile: false,
 
+            username: '',
+            email: '',
             firstName: '',
             lastName: '',
             dateOfBirth: '',
@@ -40,6 +42,8 @@ class ProfileForm extends React.Component {
                     isLoaded: true,
                     failedToGetProfile: false,
 
+                    username: result.userAuthentication.username,
+                    email: result.userAuthentication.email,
                     firstName: result.firstName,
                     lastName: result.lastName,
                     dateOfBirth: result.dateOfBirth,
@@ -83,6 +87,16 @@ class ProfileForm extends React.Component {
                     {!this.state.failedToGetProfile &&
                         <div className="container">
                             <h1>Profile</h1>
+                            <FormGroup id='username'>
+                                <Label for='username'> Username: </Label>
+                                <Input id='username' disabled='disabled' defaultValue={this.state.username}/>
+                            </FormGroup>
+
+                            <FormGroup id='email'>
+                                <Label for='email'> Email: </Label>
+                                <Input id='email' disabled='disabled' defaultValue={this.state.email}/>
+                            </FormGroup>
+
                             <FormGroup id='firstName'>
                                 <Label for='firstName'> First name: </Label>
                                 <Input id='firstName' disabled='disabled' defaultValue={this.state.firstName}/>

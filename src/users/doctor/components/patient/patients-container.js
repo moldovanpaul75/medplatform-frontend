@@ -13,6 +13,7 @@ import {
 import _ from "lodash";
 
 import * as API_COMMON from "../../../../commons/api/common-api";
+import * as API_DOCTOR from "../../api/doctor-api";
 import TableForm from "../../../../commons/tables/table-form";
 import ModalForm from "../../../../commons/modal/modal-form";
 
@@ -36,6 +37,7 @@ class PatientsContainer extends React.Component{
         this.state = {
             addPatient: false,
             updatePatient: false,
+            patientRole: [],
             patientsTableData: [],
             itemToUpdate: {
                 address: [],
@@ -50,6 +52,7 @@ class PatientsContainer extends React.Component{
 
     componentDidMount() {
         this.fetchPatients();
+        this.fetchPatientRole();
     }
 
     toggleForm(key){
@@ -93,8 +96,32 @@ class PatientsContainer extends React.Component{
         });
     }
 
+    fetchPatientRole(){
+        return API_DOCTOR.getRoleByName('ROLE_patient', (result, status, err) =>{
+           if(result !== null && status === 200){
+               this.setState(({
+                   patientRole: result,
+               }))
+           } else {
+               this.setState(({
+                   errorStatus: status,
+                   error: err
+               }));
+           }
+        });
+    }
+
     handleDelete(patientId){
-        console.log(patientId);
+        return API_COMMON.deleteItem(endpoint.patient, patientId,(status, err) =>{
+            if (status === 200 || status === 201){
+                window.location.reload(false);
+            } else {
+                this.setState(({
+                    errorStatus: status,
+                    error: err
+                }));
+            }
+        });
     }
 
 
@@ -142,10 +169,10 @@ class PatientsContainer extends React.Component{
                                                                      id: 'address',
                                                                      accessor: data => {
                                                                          let addr = [];
-                                                                         addr.push(data.address.city);
-                                                                         addr.push(data.address.state);
-                                                                         addr.push(data.address.street);
-                                                                         addr.push(data.address.zipCode);
+                                                                         addr.push('Street: '+data.address.street);
+                                                                         addr.push('City: '+data.address.city);
+                                                                         addr.push('State: '+data.address.state);
+                                                                         addr.push('Zip code: '+data.address.zipCode);
                                                                          return (<pre>{addr.join('\n')}</pre>);
                                                                      }
                                                                  },
@@ -154,8 +181,8 @@ class PatientsContainer extends React.Component{
                                                                      id: 'userAuthentication',
                                                                      accessor: data => {
                                                                          let auth = [];
-                                                                         auth.push(data.userAuthentication.username)
-                                                                         auth.push(data.userAuthentication.email)
+                                                                         auth.push('Username: '+data.userAuthentication.username)
+                                                                         auth.push('Email: '+data.userAuthentication.email)
                                                                          return (<pre>{auth.join('\n')}</pre>);
                                                                      }
                                                                  },
@@ -191,7 +218,189 @@ class PatientsContainer extends React.Component{
                      className={this.props.className} sizze="lg">
                   <ModalHeader toggle={() => this.toggleForm('addPatient')}> Add patient: </ModalHeader>
                   <ModalBody>
-                      <p> to do</p>
+                      <ModalForm type = {'0'}
+                                 endpoint = {endpoint.patient}
+                                 reloadHandler = {() => this.reload('addPatient')}
+                                 formControls =
+                                     {[
+                                         {
+                                             id: 'form',
+                                             values: [
+                                                 {
+                                                     id: 'firstName',
+                                                     fieldName: 'firstNameField',
+                                                     value: '',
+                                                     placeholder: 'First name...',
+                                                     valid: false,
+                                                     touched: false,
+                                                     display: true,
+                                                     message: 'First name too short!',
+                                                     validationRules: {
+                                                         minLength: 3,
+                                                         isRequired: true
+                                                     }
+                                                 },
+                                                 {
+                                                     id: 'lastName',
+                                                     fieldName: 'lastNameField',
+                                                     value: '',
+                                                     placeholder: 'Last name...',
+                                                     valid: false,
+                                                     touched: false,
+                                                     display: true,
+                                                     message: 'Last name too short!',
+                                                     validationRules: {
+                                                         minLength: 3,
+                                                         isRequired: true
+                                                     }
+                                                 },
+                                                 {
+                                                     id: 'dateOfBirth',
+                                                     fieldName: 'dateOfBirthField',
+                                                     value: '',
+                                                     placeholder: 'Date of birth...',
+                                                     valid: false,
+                                                     touched: false,
+                                                     display: true,
+                                                     message: 'yyyy-mm-dd',
+                                                     validationRules: {
+                                                         minLength: 10,
+                                                         isRequired: true
+                                                     }
+                                                 },
+                                                 {
+                                                     id: 'gender',
+                                                     fieldName: 'genderField',
+                                                     value: '',
+                                                     placeholder: 'Gender...',
+                                                     valid: false,
+                                                     touched: false,
+                                                     display: true,
+                                                     message: 'M/F',
+                                                     validationRules: {
+                                                         minLength: 1,
+                                                         isRequired: true
+                                                     }
+                                                 },
+                                             ]
+                                         },
+                                         {
+                                             id: 'address',
+                                             values: [
+                                                 {
+                                                     id: 'street',
+                                                     fieldName: 'streetField',
+                                                     value: '',
+                                                     placeholder: 'street name...',
+                                                     valid: false,
+                                                     touched: false,
+                                                     display: true,
+                                                     message: 'Street name too short!',
+                                                     validationRules: {
+                                                         minLength: 3,
+                                                         isRequired: true
+                                                     }
+                                                 },
+                                                 {
+                                                     id: 'city',
+                                                     fieldName: 'cityField',
+                                                     value: '',
+                                                     placeholder: 'city name...',
+                                                     valid: false,
+                                                     touched: false,
+                                                     display: true,
+                                                     message: 'City name too short!',
+                                                     validationRules: {
+                                                         minLength: 3,
+                                                         isRequired: true
+                                                     }
+                                                 },
+                                                 {
+                                                     id: 'state',
+                                                     fieldName: 'stateField',
+                                                     value: '',
+                                                     placeholder: 'state name...',
+                                                     valid: false,
+                                                     touched: false,
+                                                     display: true,
+                                                     message: 'state name too short!',
+                                                     validationRules: {
+                                                         minLength: 3,
+                                                         isRequired: true
+                                                     }
+                                                 },
+                                                 {
+                                                     id: 'zipCode',
+                                                     fieldName: 'zipCodeField',
+                                                     value: '',
+                                                     placeholder: 'zipCode name...',
+                                                     valid: false,
+                                                     touched: false,
+                                                     display: true,
+                                                     message: 'zipCode name too short!',
+                                                     validationRules: {
+                                                         minLength: 3,
+                                                         isRequired: true
+                                                     }
+                                                 },
+                                             ]
+                                         },
+                                         {
+                                             id: 'userAuthentication',
+                                             values: [
+                                                 {
+                                                     id: 'username',
+                                                     fieldName: 'usernameField',
+                                                     value: '',
+                                                     placeholder: 'username...',
+                                                     valid: false,
+                                                     touched: false,
+                                                     display: true,
+                                                     message: 'Username too short!',
+                                                     validationRules: {
+                                                         minLength: 4,
+                                                         isRequired: true
+                                                     }
+                                                 },
+                                                 {
+                                                     id: 'password',
+                                                     fieldName: 'passwordField',
+                                                     value: '',
+                                                     placeholder: 'password...',
+                                                     valid: false,
+                                                     touched: false,
+                                                     display: true,
+                                                     message: 'Password too short!',
+                                                     validationRules: {
+                                                         minLength: 5,
+                                                         isRequired: true
+                                                     }
+                                                 },
+                                                 {
+                                                     id: 'email',
+                                                     fieldName: 'emailField',
+                                                     value: '',
+                                                     placeholder: 'email...',
+                                                     valid: false,
+                                                     touched: false,
+                                                     display: true,
+                                                     message: 'Email invalid!',
+                                                     validationRules: {
+                                                         emailValidator: true
+                                                     }
+                                                 },
+                                                 {
+                                                     id: 'userRole',
+                                                     fieldName: 'userRoleField',
+                                                     value: this.state.patientRole,
+                                                     valid: true,
+                                                     display: false
+                                                 }
+
+                                             ]
+                                         }
+                                     ]}
+                                 />
                   </ModalBody>
               </Modal>
 
@@ -212,6 +421,12 @@ class PatientsContainer extends React.Component{
                                                  id: 'id',
                                                  fieldName: 'idField',
                                                  value: this.state.itemToUpdate.id,
+                                                 display: false,
+                                             },
+                                             {
+                                                 id: 'userAuthentication',
+                                                 fieldName: 'userAuthenticationField',
+                                                 value: this.state.itemToUpdate.userAuthentication,
                                                  display: false,
                                              },
                                              {
@@ -278,9 +493,65 @@ class PatientsContainer extends React.Component{
                                                      id: 'id',
                                                      fieldName: 'idField',
                                                      value: this.state.itemToUpdate.address.id,
+                                                     display: false,
+                                                 },
+                                                 {
+                                                     id: 'street',
+                                                     fieldName: 'streetField',
+                                                     value: this.state.itemToUpdate.address.street,
+                                                     placeholder: 'street name...',
+                                                     valid: true,
+                                                     touched: false,
                                                      display: true,
+                                                     message: 'Street name too short!',
+                                                     validationRules: {
+                                                         minLength: 3,
+                                                         isRequired: true
+                                                     }
+                                                 },
+                                                 {
+                                                     id: 'city',
+                                                     fieldName: 'cityField',
+                                                     value: this.state.itemToUpdate.address.city,
+                                                     placeholder: 'city name...',
+                                                     valid: true,
+                                                     touched: false,
+                                                     display: true,
+                                                     message: 'City name too short!',
+                                                     validationRules: {
+                                                         minLength: 3,
+                                                         isRequired: true
+                                                     }
+                                                 },
+                                                 {
+                                                     id: 'state',
+                                                     fieldName: 'stateField',
+                                                     value: this.state.itemToUpdate.address.state,
+                                                     placeholder: 'state name...',
+                                                     valid: true,
+                                                     touched: false,
+                                                     display: true,
+                                                     message: 'state name too short!',
+                                                     validationRules: {
+                                                         minLength: 3,
+                                                         isRequired: true
+                                                     }
+                                                 },
+                                                 {
+                                                     id: 'zipCode',
+                                                     fieldName: 'zipCodeField',
+                                                     value: this.state.itemToUpdate.address.zipCode,
+                                                     placeholder: 'zipCode name...',
+                                                     valid: true,
+                                                     touched: false,
+                                                     display: true,
+                                                     message: 'zipCode name too short!',
+                                                     validationRules: {
+                                                         minLength: 3,
+                                                         isRequired: true
+                                                     }
+                                                 },
 
-                                                 }
                                              ]
                                          }
                                  ]}

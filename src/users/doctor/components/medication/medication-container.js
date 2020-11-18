@@ -146,7 +146,7 @@ class MedicationContainer extends React.Component{
                                                                             accessor: 'type',
                                                                         },
                                                                         {
-                                                                            Header: 'Side Effects',
+                                                                            Header: 'Side effects',
                                                                             id: 'sideEffectList',
                                                                             accessor: data => {
                                                                                 let sideEffects = [];

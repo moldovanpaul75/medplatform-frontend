@@ -56,5 +56,6 @@ export {
     getProfile,
     getItems,
     deleteItem,
-    saveItem
+    saveItem,
+    buildHeaders
 };

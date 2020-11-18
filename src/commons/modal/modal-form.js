@@ -169,6 +169,7 @@ class ModalForm extends React.Component {
         }
 
         console.log(item)
+        //console.log(this.state.formControls)
         this.registerItem(item, 'POST');
     }
 
@@ -207,7 +208,8 @@ class ModalForm extends React.Component {
                     <Col sm={{size: '4', offset: 8}}>
                 {(this.state.type === '0') && <Button
                                     style={{marginTop : 20}}
-                                    disabled={!this.state.formIsValid} onClick={this.handleAdd}> Add </Button>}
+                                     disabled={!this.state.formIsValid}
+                                     onClick={this.handleAdd}> Add </Button>}
                 {(this.state.type === '1') && <Button
                                     style={{marginTop : 20}}
                                     onClick={this.handleUpdate}> Update </Button>}
