@@ -50,24 +50,26 @@ class ModalForm extends React.Component {
     }
 
 
-    handleChange = (event, index) => {
+    handleChange = (event, index1, index2) => {
         const value = event.target.value;
 
-        const updatedControls = this.state.formControls;
-        const updatedFormElement = updatedControls[index];
+        const updatedControls = this.state.formControls[index1].values;
+        const updatedFormElement = updatedControls[index2];
 
         updatedFormElement.value = value;
         updatedFormElement.touched = true;
         updatedFormElement.valid = validate(value, updatedFormElement.validationRules);
-        updatedControls[index] = updatedFormElement;
+        updatedControls[index2] = updatedFormElement;
 
         let formIsValid = true;
 
         updatedControls.map(item =>{
             formIsValid = item.valid && formIsValid;
         });
+
+        this.state.formControls[index1].values= updatedControls;
+
         this.setState({
-            formControls: updatedControls,
             formIsValid: formIsValid
         });
     };
@@ -75,22 +77,24 @@ class ModalForm extends React.Component {
 
     createFormControls(){
         if(this.state.formControls !== undefined) {
-            return this.state.formControls.map((item, index) =>
-                item.display &&
-                <FormGroup key={index}
-                           id={item.id}
-                >
-                    <Label for={item.fieldName}> {item.id}: </Label>
-                    <Input name={item.id} id={item.fieldName} placeholder={item.placeholder}
-                           onChange={(event) => this.handleChange(event, index)}
-                           defaultValue={item.value}
-                           touched={item.touched ? 1 : 0}
-                           valid={item.valid}
-                           required
-                    />
-                    {item.touched && !item.valid &&
-                    <div className={"error-message"}> * {item.message}</div>}
-                </FormGroup>
+            return this.state.formControls.map((items, index1) =>
+                items.values.map((item,index2) =>
+                    item.display &&
+                    <FormGroup key={index2}
+                               id={item.id}
+                    >
+                        <Label for={item.fieldName}> {item.id}: </Label>
+                        <Input name={item.id} id={item.fieldName} placeholder={item.placeholder}
+                               onChange={(event) => this.handleChange(event, index1, index2)}
+                               defaultValue={item.value}
+                               touched={item.touched ? 1 : 0}
+                               valid={item.valid}
+                               required
+                        />
+                        {item.touched && !item.valid &&
+                        <div className={"error-message"}> * {item.message}</div>}
+                    </FormGroup>
+                    )
             );
         }
     }
@@ -146,9 +150,19 @@ class ModalForm extends React.Component {
 
 
     handleAdd() {
-        let item = this.state.formControls.reduce(
-            (obj, item) => Object.assign(obj, {[item.id]: item.value}), {}
-        );
+        // let item = this.state.formControls.reduce(
+        //     (obj, item) => Object.assign(obj, {[item.id]: item.value}), {}
+        // );
+
+
+        let item = [];
+        for(let i=0; i<this.state.formControls.length; i++){
+            if(this.state.formControls[i].id === 'form'){
+                item = this.state.formControls[i].values.reduce((obj, item) => Object.assign(obj, {[item.id]: item.value}), {});
+            }else{
+                item[this.state.formControls[i].id] = this.state.formControls[i].values.reduce((obj, item) => Object.assign(obj, {[item.id]: item.value}), {});
+            }
+        }
 
         if(this.state.dropDownSelectedValues !== undefined) {
             item[this.state.dropDownSelectedValues.name] = this.state.dropDownSelectedValues.values;
@@ -159,15 +173,26 @@ class ModalForm extends React.Component {
     }
 
     handleUpdate(){
-        const item = this.state.formControls.reduce(
-            (obj, item) => Object.assign(obj, {[item.id]: item.value}), {}
-        );
+        // let item = this.state.formControls.reduce(
+        //     (obj, item) => Object.assign(obj, {[item.id]: item.value}), {}
+        // );
+
+
+        let item = [];
+        for(let i=0; i<this.state.formControls.length; i++){
+            if(this.state.formControls[i].id === 'form'){
+                item = this.state.formControls[i].values.reduce((obj, item) => Object.assign(obj, {[item.id]: item.value}), {});
+            }else{
+                item[this.state.formControls[i].id] = this.state.formControls[i].values.reduce((obj, item) => Object.assign(obj, {[item.id]: item.value}), {});
+            }
+        }
 
         if(this.state.dropDownSelectedValues !== undefined) {
             item[this.state.dropDownSelectedValues.name] = this.state.dropDownSelectedValues.values;
         }
 
-        console.log(item)
+
+        console.log(item);
         this.registerItem(item, 'PUT');
     }
 
@@ -180,8 +205,12 @@ class ModalForm extends React.Component {
 
                 <Row>
                     <Col sm={{size: '4', offset: 8}}>
-                {(this.state.type === '0') && <Button disabled={!this.state.formIsValid} onClick={this.handleAdd}> Add </Button>}
-                {(this.state.type === '1') && <Button onClick={this.handleUpdate}> Update </Button>}
+                {(this.state.type === '0') && <Button
+                                    style={{marginTop : 20}}
+                                    disabled={!this.state.formIsValid} onClick={this.handleAdd}> Add </Button>}
+                {(this.state.type === '1') && <Button
+                                    style={{marginTop : 20}}
+                                    onClick={this.handleUpdate}> Update </Button>}
                     </Col>
                 </Row>
 

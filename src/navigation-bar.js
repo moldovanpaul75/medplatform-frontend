@@ -44,7 +44,7 @@ const NavigationBar = () => (
 
 
                     <DropdownItem>
-                        <NavLink href="/caregivers">Patients</NavLink>
+                        <NavLink href="/patients">Patients</NavLink>
                     </DropdownItem>
 
 
@@ -59,7 +59,7 @@ const NavigationBar = () => (
 
 
                     <DropdownItem>
-                        <NavLink href="/medical_records">Medication Plans</NavLink>
+                        <NavLink href="/medication_plans">Medication Plans</NavLink>
                     </DropdownItem>
                 </DropdownMenu>
 
@@ -75,7 +75,7 @@ const NavigationBar = () => (
 
 
                 {AuthenticationService.isUserLoggedIn() && AuthenticationService.getUserRole() === "ROLE_caregiver" &&<NavLink style={textStyle} href="/caregiver" >Profile</NavLink>}
-                {AuthenticationService.isUserLoggedIn() && AuthenticationService.getUserRole() === "ROLE_caregiver" &&<NavLink style={textStyle} href="/patients" >Patients</NavLink>}
+                {AuthenticationService.isUserLoggedIn() && AuthenticationService.getUserRole() === "ROLE_caregiver" &&<NavLink style={textStyle} href="/caregiver_patients" >Patients</NavLink>}
             </Nav>
 
 
