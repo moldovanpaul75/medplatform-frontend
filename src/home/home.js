@@ -2,7 +2,8 @@ import React from 'react';
 
 import BackgroundImg from '../commons/images/future-medicine.jpg';
 
-import {Button, Container, Jumbotron} from 'reactstrap';
+import {Button, Container, Jumbotron, NavLink} from 'reactstrap';
+import AuthenticationService from "../login/service/authentication-service";
 
 const backgroundStyle = {
     backgroundPosition: 'center',
@@ -24,7 +25,10 @@ class Home extends React.Component {
             <div>
                 <Jumbotron fluid style={backgroundStyle}>
                     <Container fluid>
-                        <h1 className="display-3" style={textStyle}>Integrated Medical Monitoring Platform for Home-care assistance</h1>
+                        {AuthenticationService.isUserLoggedIn() &&  <h1 className="display-3" style={textStyle}>Welcome!</h1>}
+
+
+                        <h3 className="display-4" style={textStyle}>Integrated Medical Monitoring Platform for Home-care assistance</h3>
                         <p className="lead" style={textStyle}> <b>Enabling real time monitoring of patients, remote-assisted care services and
                             smart intake mechanism for prescribed medication.</b> </p>
                         <hr className="my-2"/>

@@ -4,6 +4,11 @@ import 'react-table/react-table.css';
 import Field from "./fields/Field";
 import {Col, Row} from "react-bootstrap";
 
+const hasWindow = typeof window !== 'undefined';
+const innerWidth = hasWindow ? window.innerWidth : null;
+const innerHeight = hasWindow ? window.innerHeight : null;
+
+
 class Table extends Component {
     constructor(props) {
         super(props);
@@ -69,7 +74,10 @@ class Table extends Component {
         let data = this.state.data ? this.state.data.filter(data => this.filter(data)) : [];
 
         return (
-            <div>
+            <div style={{
+                height: innerHeight * 0.6,
+                width: innerWidth * 0.8
+            }}>
                 <Row>
                     {
                         this.state.search.map((header, index) => {
@@ -94,7 +102,7 @@ class Table extends Component {
                             getTrProps={this.getTRPropsType}
                             showPagination={true}
                             style={{
-                                height: '300px'
+                                height: '500px'
                             }}
                         />
                     </Col>

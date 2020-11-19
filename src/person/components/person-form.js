@@ -1,11 +1,10 @@
 import React from 'react';
-import validate from "./validators/person-validators";
+import validate from "../../commons/validators/validators";
 import Button from "react-bootstrap/Button";
 import * as API_USERS from "../api/person-api";
 import APIResponseErrorMessage from "../../commons/errorhandling/api-response-error-message";
 import {Col, Row} from "reactstrap";
 import { FormGroup, Input, Label} from 'reactstrap';
-
 
 
 class PersonForm extends React.Component {
@@ -171,11 +170,11 @@ class PersonForm extends React.Component {
                     />
                 </FormGroup>
 
-                    <Row>
-                        <Col sm={{size: '4', offset: 8}}>
-                            <Button type={"submit"} disabled={!this.state.formIsValid} onClick={this.handleSubmit}>  Submit </Button>
-                        </Col>
-                    </Row>
+                <Row>
+                    <Col sm={{size: '4', offset: 8}}>
+                        <Button type={"submit"} disabled={!this.state.formIsValid} onClick={this.handleSubmit}>  Submit </Button>
+                    </Col>
+                </Row>
 
                 {
                     this.state.errorStatus > 0 &&

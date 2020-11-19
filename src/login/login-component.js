@@ -1,12 +1,13 @@
 import React from 'react';
-import axios from 'axios';
 import {Col, FormGroup, Input, Label, Row} from 'reactstrap';
 import Button from "react-bootstrap/Button";
 import APIResponseErrorMessage from "../commons/errorhandling/api-response-error-message";
+import validate from "../commons/validators/validators";
+import * as API_LOGIN from "./api/login-api";
+import AuthenticationService from "./service/authentication-service";
 
 
-
-class LoginContainer extends React.Component{
+class LoginComponent extends React.Component{
 
     constructor(props) {
         super(props);
@@ -14,7 +15,7 @@ class LoginContainer extends React.Component{
         this.state = {
             errorStatus: 0,
             error: null,
-
+            hasLoginFailed: false,
             formIsValid: false,
 
             formControls:{
@@ -30,7 +31,7 @@ class LoginContainer extends React.Component{
                 },
                 password: {
                     value: '',
-                    placeHolder: 'Enter your password',
+                    placeholder: 'Enter your password',
                     valid: false,
                     touched: false,
                     validationRules:{
@@ -41,36 +42,82 @@ class LoginContainer extends React.Component{
             }
         };
         this.handleChange = this.handleChange.bind(this);
-        this.handleFormSubmit = this.handleFormSubmit.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
 
     handleChange = event => {
+        const name = event.target.name;
+        const value = event.target.value;
 
+        const updatedControls = this.state.formControls;
 
+        const updatedFormElement = updatedControls[name];
 
+        updatedFormElement.value = value;
+        updatedFormElement.touched = true;
+        updatedFormElement.valid = validate(value, updatedFormElement.validationRules);
+        updatedControls[name] = updatedFormElement;
+
+        let formIsValid = true;
+        for (let updatedFormElementName in updatedControls) {
+            formIsValid = updatedControls[updatedFormElementName].valid && formIsValid;
+        }
+
+        this.setState({
+            formControls: updatedControls,
+            formIsValid: formIsValid
+        });
     }
 
 
+    loginUser(user){
+        return API_LOGIN.postLogin(user, (result, status, error) => {
+           if(result != null && (status === 200 || status === 201)) {
+               console.log("Successfully sign in: " + JSON.stringify(result.username) + " " + JSON.stringify(result.roles) + JSON.stringify(result.id));
 
-    handleFormSubmit() {
+               AuthenticationService.registerLogin(result.username, result.token, result.roles, result.id)
+
+               console.log(result.id)
+               this.setState(({
+                   errorStatus: 0,
+                   error: null,
+                   hasLoginFailed: false
+               }));
+
+               this.props.history.push("/");
+           } else {
+               this.setState(({
+                   errorStatus: status,
+                   error: error,
+                   hasLoginFailed:true,
+               }));
+           }
+        });
+    }
 
 
-
+    handleSubmit() {
+        let user_object = {
+            username: this.state.formControls.username.value,
+            password: this.state.formControls.password.value
+        };
+        this.loginUser(user_object);
     }
 
 
     render() {
-     return(
+        return(
           <div>
               <div
                   style={{
                       position: 'absolute', left: '50%', top: '50%',
                       transform: 'translate(-50%, -50%)'
                   }}>
+                  {this.state.hasLoginFailed && <div className="alert alert-warning">Invalid Credentials</div>}
                   <FormGroup id='username'>
                       <Label for='usernameField'> Username: </Label>
-                      <Input name='username' id='usernameField' placeHolder={this.state.formControls.username.placeholder}
+                      <Input name='username' id='usernameField' placeholder={this.state.formControls.username.placeholder}
                              onChange={this.handleChange}
                              defaultValue={this.state.formControls.username.value}
                              touched={this.state.formControls.username.touched? 1:0}
@@ -83,7 +130,7 @@ class LoginContainer extends React.Component{
 
                   <FormGroup id='password'>
                       <Label for='passwordField'> Password: </Label>
-                      <Input name='password' id='passwordField' type="password" placeHolder={this.state.formControls.password.placeHolder}
+                      <Input name='password' id='passwordField' type="password" placeholder={this.state.formControls.password.placeholder}
                              onChange={this.handleChange}
                              defaultValue={this.state.formControls.password.value}
                              touched={this.state.formControls.password.touched? 1:0}
@@ -96,18 +143,18 @@ class LoginContainer extends React.Component{
 
                   <Row>
                       <Col sm={{size: '4', offset: 8}}>
-                          <Button type={"submit"} disabled={!this.state.formIsValid} onClick={this.handleFormSubmit}> Submit </Button>
+                          <Button type={"submit"} disabled={!this.state.formIsValid} onClick={this.handleSubmit}> Submit </Button>
                       </Col>
                   </Row>
 
-                  {
-                      this.state.errorStatus > 0 &&
-                      <APIResponseErrorMessage errorStatus={this.state.errorStatus} error={this.state.error}/>
-                  }
+                  {/*{*/}
+                  {/*    this.state.errorStatus > 0 &&*/}
+                  {/*    <APIResponseErrorMessage errorStatus={this.state.errorStatus} error={this.state.error}/>*/}
+                  {/*}*/}
               </div>
           </div>
         );
     }
 }
 
-export default LoginContainer;
+export default LoginComponent;
