@@ -1,5 +1,4 @@
 import React from "react";
-import APIResponseErrorMessage from "../../../../commons/errorhandling/api-response-error-message";
 import {
     Button,
     Card,
@@ -66,10 +65,10 @@ class PatientsContainer extends React.Component{
     }
 
     componentDidMount() {
-        this.fetchPatientRole();
-        this.fetchLoggedDoctor();
         this.fetchItems(endpoint.patient, ['patientsTableData', 'patientsLoaded']);
         this.fetchItems(endpoint.medication, ['medicationTableData', 'medicationsLoaded']);
+        this.fetchPatientRole();
+        this.fetchLoggedDoctor();
     }
 
     toggleForm(key){
@@ -260,10 +259,6 @@ class PatientsContainer extends React.Component{
                                                              }
                           />}
                       </Col>
-                      {this.state.errorStatus > 0 && <APIResponseErrorMessage
-                          errorStatus={this.state.errorStatus}
-                          error={this.state.error}
-                      />   }
                   </Row>
               </Card>
 
