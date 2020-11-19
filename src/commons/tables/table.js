@@ -75,7 +75,7 @@ class Table extends Component {
 
         return (
             <div style={{
-                height: innerHeight * 0.5,
+                height: innerHeight * 0.6,
                 width: innerWidth * 0.8
             }}>
                 <Row>
@@ -102,7 +102,7 @@ class Table extends Component {
                             getTrProps={this.getTRPropsType}
                             showPagination={true}
                             style={{
-                                height: '400px'
+                                height: '500px'
                             }}
                         />
                     </Col>

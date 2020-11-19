@@ -12,6 +12,12 @@ const emailValidator = value => {
     return re.test(String(value).toLowerCase());
 };
 
+const booleanValidator = value => {
+    if(value === "true" || value === "false") return true;
+        else return false;
+}
+
+
 const validate = (value, rules) => {
     let isValid = true;
 
@@ -26,6 +32,9 @@ const validate = (value, rules) => {
 
             case 'emailValidator': isValid = isValid && emailValidator(value);
                                    break;
+
+            case 'booleanValidator': isValid = isValid && booleanValidator(value);
+                                    break;
 
             default: isValid = true;
         }

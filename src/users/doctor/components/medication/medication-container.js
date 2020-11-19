@@ -133,11 +133,6 @@ class MedicationContainer extends React.Component{
                                                                 tableColumns = {
                                                                     [
                                                                         {
-                                                                            Header: 'Id',
-                                                                            accessor: 'id',
-                                                                            show: false
-                                                                        },
-                                                                        {
                                                                             Header: 'Name',
                                                                             accessor: 'name'
                                                                         },
@@ -157,13 +152,13 @@ class MedicationContainer extends React.Component{
                                                                             },
                                                                         },
                                                                         {
-                                                                            Header: '',
+                                                                            Header: 'Actions',
                                                                             Cell: row => (
                                                                                 <div>
                                                                                     <Button color="primary"
                                                                                             onClick={() => this.toggleForm2('updateMedication', row.original)}
                                                                                     >{<EditIcon/>}</Button>&nbsp;&nbsp;
-                                                                                    <Button onClick={() => this.handleDelete(endpoint.medications, row.original.id)}>{<DeleteIcon/>}</Button>
+                                                                                    <Button color="danger" onClick={() => this.handleDelete(endpoint.medications, row.original.id)}>{<DeleteIcon/>}</Button>
                                                                                 </div>
                                                                             )
                                                                         }
@@ -203,11 +198,6 @@ class MedicationContainer extends React.Component{
                                         tableColumns = {
                                             [
                                                 {
-                                                    Header: 'Id',
-                                                    accessor: 'id',
-                                                    show: false
-                                                },
-                                                {
                                                     Header: 'Name',
                                                     accessor: 'name'
                                                 },
@@ -216,13 +206,13 @@ class MedicationContainer extends React.Component{
                                                     accessor: 'details',
                                                 },
                                                 {
-                                                    Header: '',
+                                                    Header: 'Actions',
                                                     Cell: row => (
                                                         <div>
                                                             <Button color="primary"
                                                                     onClick={() => this.toggleForm2('updateSideEffect', row.original)}
                                                             >{<EditIcon/>}</Button>&nbsp;&nbsp;
-                                                            <Button onClick={() => this.handleDelete(endpoint.sideEffects, row.original.id)}>{<DeleteIcon/>}</Button>
+                                                            <Button color="danger" onClick={() => this.handleDelete(endpoint.sideEffects, row.original.id)}>{<DeleteIcon/>}</Button>
                                                         </div>
                                                     )
                                                 }
@@ -328,10 +318,11 @@ class MedicationContainer extends React.Component{
                                                 },]
                                         },
                                     ]}
-                                    dropDownOptions = {this.state.sideEffectTableData}
-                                    dropDownSelectedValues = {{
+                                    multiselectDropDown = {{
                                             name: 'sideEffectList',
+                                            displayValue: 'name',
                                             values: [],
+                                            options: this.state.sideEffectTableData
                                          }
                                     }
                          />
@@ -437,10 +428,12 @@ class MedicationContainer extends React.Component{
                                                 },]
                                         },
                                     ]}
-                                    dropDownOptions = {this.state.sideEffectTableData}
-                                    dropDownSelectedValues = {{
-                                        name: 'sideEffectList',
-                                        values: this.state.itemToUpdate.sideEffectList,
+                                    multiselectDropDown = {
+                                        {
+                                            name: 'sideEffectList',
+                                            displayValue: 'name',
+                                            values: this.state.itemToUpdate.sideEffectList,
+                                            options: this.state.sideEffectTableData
                                         }
                                     }
                          />

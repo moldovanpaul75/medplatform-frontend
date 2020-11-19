@@ -10,13 +10,12 @@ import styles from './commons/styles/project-style.css';
 import AuthenticatedRoute from "./route/authenticated-route";
 import RoleRoute from "./route/role-route";
 import ProfileForm from "./commons/profile/profile-form";
-import MedicalRecordForm from "./users/patient/components/medical-record-form";
 import MedicationContainer from "./users/doctor/components/medication/medication-container";
 import PatientsContainer from "./users/doctor/components/patient/patients-container";
 import CaregiversContainer from "./users/doctor/components/caregiver/caregivers-container";
 import MedicationPlansContainer from "./users/doctor/components/medication-plan/medication-plans-container";
 import CaregiverPatientsContainer from "./users/caregiver/components/caregiver-patients-container";
-import MedicationPlanContainer from "./users/patient/components/medication-plan-container";
+import PatientMedicalInfo from "./users/patient/components/patient-medical-info";
 
 
 class App extends React.Component {
@@ -87,12 +86,12 @@ class App extends React.Component {
                             component={CaregiversContainer}
                         />
 
-
                         <RoleRoute
                             userRole="ROLE_doctor"
                             path='/medication_plans'
                             component={MedicationPlansContainer}
                         />
+
 
                         {/*Caregiver functionalities*/}
                         <RoleRoute
@@ -102,19 +101,12 @@ class App extends React.Component {
                         />
 
 
-                        <RoleRoute
-                            userRole="ROLE_patient"
-                            path='/medical_record'
-                            component={() => <MedicalRecordForm />}
-                        />
 
                         <RoleRoute
                             userRole="ROLE_patient"
-                            path='/medication_plan'
-                            component={() => <MedicationPlanContainer />}
+                            path='/medical_info'
+                            component={() => <PatientMedicalInfo />}
                         />
-
-
 
                         <Route component={ErrorPage} />
                     </Switch>

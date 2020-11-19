@@ -39,22 +39,17 @@ const NavigationBar = () => (
                 <DropdownMenu>
 
                     <DropdownItem>
-                        <NavLink href="/caregivers">Caregivers</NavLink>
-                    </DropdownItem>
-
-
-                    <DropdownItem>
                         <NavLink href="/patients">Patients</NavLink>
                     </DropdownItem>
 
 
                     <DropdownItem>
-                        <NavLink href="/medications">Medications</NavLink>
+                        <NavLink href="/caregivers">Caregivers</NavLink>
                     </DropdownItem>
 
 
                     <DropdownItem>
-                        <NavLink href="/medical_records">Medical Records</NavLink>
+                        <NavLink href="/medications">Medications</NavLink>
                     </DropdownItem>
 
 
@@ -70,8 +65,7 @@ const NavigationBar = () => (
                 {AuthenticationService.isUserLoggedIn() && AuthenticationService.getUserRole() === "ROLE_doctor" &&<NavLink style={textStyle} href="/doctor" >Profile</NavLink>}
 
                 {AuthenticationService.isUserLoggedIn() && AuthenticationService.getUserRole() === "ROLE_patient" &&<NavLink style={textStyle} href="/patient" >Profile</NavLink>}
-                {AuthenticationService.isUserLoggedIn() && AuthenticationService.getUserRole() === "ROLE_patient" &&<NavLink style={textStyle} href="/medication_plan">Medication Plan</NavLink>}
-                {AuthenticationService.isUserLoggedIn() && AuthenticationService.getUserRole() === "ROLE_patient" &&<NavLink style={textStyle} href="/medical_record">Medical Record</NavLink>}
+                {AuthenticationService.isUserLoggedIn() && AuthenticationService.getUserRole() === "ROLE_patient" &&<NavLink style={textStyle} href="/medical_info">Medical Info</NavLink>}
 
 
                 {AuthenticationService.isUserLoggedIn() && AuthenticationService.getUserRole() === "ROLE_caregiver" &&<NavLink style={textStyle} href="/caregiver" >Profile</NavLink>}
@@ -80,7 +74,7 @@ const NavigationBar = () => (
 
 
             <Nav className="navbar-nav navbar-collapse justify-content-end" navbar>
-                {!AuthenticationService.isUserLoggedIn() &&<Button style={textStyle} href="/login">Login</Button>}
+                {!AuthenticationService.isUserLoggedIn() &&<Button color="primary" style={textStyle} href="/login">Login</Button>}
                 {AuthenticationService.isUserLoggedIn() &&<Button onClick={AuthenticationService.logout} style={textStyle} href="/">Logout</Button>}
             </Nav>
 

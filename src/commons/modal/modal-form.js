@@ -33,8 +33,7 @@ class ModalForm extends React.Component {
             type: this.props.type,
 
             formControls: this.props.formControls,
-            dropDownOptions: this.props.dropDownOptions,
-            dropDownSelectedValues: this.props.dropDownSelectedValues,
+            multiselectDropDown: this.props.multiselectDropDown,
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -82,7 +81,7 @@ class ModalForm extends React.Component {
                     item.display &&
                     <FormGroup key={index2}
                                id={item.id}
-                    >
+                                            >
                         <Label for={item.fieldName}> {item.id}: </Label>
                         <Input name={item.id} id={item.fieldName} placeholder={item.placeholder}
                                onChange={(event) => this.handleChange(event, index1, index2)}
@@ -100,29 +99,31 @@ class ModalForm extends React.Component {
     }
 
     createDropDown(){
-        if(this.state.dropDownOptions !== undefined) {
+        if(this.state.multiselectDropDown !== undefined) {
             return <Multiselect
-                options={this.state.dropDownOptions}
-                selectedValues={this.state.dropDownSelectedValues.values}
-                onSelect={this.onSelect}
-                onRemove={this.onRemove}
-                displayValue="name"
-            />
+                        options={this.state.multiselectDropDown.options}
+                        selectedValues={this.state.multiselectDropDown.values}
+                        selectionLimit={this.state.multiselectDropDown.selectionLimit}
+                        onSelect={this.onSelect}
+                        onRemove={this.onRemove}
+                        displayValue={this.state.multiselectDropDown.displayValue}
+                    />
         }
     }
 
 
+
     onSelect(selectedList, selectedItem) {
-        const items = this.state.dropDownSelectedValues
+        const items = this.state.multiselectDropDown
         items.values.push(selectedItem)
 
         this.setState({
-            dropDownSelectedValues: items
+            multiselectDropDown: items
         })
     }
 
     onRemove(selectedList, removedItem) {
-        const items = this.state.dropDownSelectedValues
+        const items = this.state.multiselectDropDown
         const index = items.values.indexOf(removedItem);
 
         if(index !== -1){
@@ -130,7 +131,7 @@ class ModalForm extends React.Component {
         }
 
         this.setState({
-            dropDownSelectedValues: items
+            multiselectDropDown: items
         })
     }
 
@@ -150,11 +151,6 @@ class ModalForm extends React.Component {
 
 
     handleAdd() {
-        // let item = this.state.formControls.reduce(
-        //     (obj, item) => Object.assign(obj, {[item.id]: item.value}), {}
-        // );
-
-
         let item = [];
         for(let i=0; i<this.state.formControls.length; i++){
             if(this.state.formControls[i].id === 'form'){
@@ -164,9 +160,17 @@ class ModalForm extends React.Component {
             }
         }
 
-        if(this.state.dropDownSelectedValues !== undefined) {
-            item[this.state.dropDownSelectedValues.name] = this.state.dropDownSelectedValues.values;
+        if(this.state.multiselectDropDown !== undefined) {
+            if(this.state.multiselectDropDown.selectionLimit === 1){
+                item = this.state.multiselectDropDown.values.reduce((obj, item) => Object.assign(obj, {[this.state.multiselectDropDown.name]: {
+                        id: this.state.multiselectDropDown.values[0].id
+                    }}), item);
+            }
+            else {
+                item[this.state.multiselectDropDown.name] = this.state.multiselectDropDown.values;
+            }
         }
+
 
         console.log(item)
         //console.log(this.state.formControls)
@@ -174,11 +178,6 @@ class ModalForm extends React.Component {
     }
 
     handleUpdate(){
-        // let item = this.state.formControls.reduce(
-        //     (obj, item) => Object.assign(obj, {[item.id]: item.value}), {}
-        // );
-
-
         let item = [];
         for(let i=0; i<this.state.formControls.length; i++){
             if(this.state.formControls[i].id === 'form'){
@@ -188,12 +187,20 @@ class ModalForm extends React.Component {
             }
         }
 
-        if(this.state.dropDownSelectedValues !== undefined) {
-            item[this.state.dropDownSelectedValues.name] = this.state.dropDownSelectedValues.values;
+        if(this.state.multiselectDropDown !== undefined) {
+            if(this.state.multiselectDropDown.selectionLimit === 1){
+                item = this.state.multiselectDropDown.values.reduce((obj, item) => Object.assign(obj, {[this.state.multiselectDropDown.name]: {
+                        id: this.state.multiselectDropDown.values[0].id
+                    }}), item);
+            }
+            else {
+                item[this.state.multiselectDropDown.name] = this.state.multiselectDropDown.values;
+            }
         }
 
 
         console.log(item);
+        //console.log(this.state.formControls)
         this.registerItem(item, 'PUT');
     }
 
@@ -204,11 +211,12 @@ class ModalForm extends React.Component {
                 {this.createFormControls()}
                 {this.createDropDown()}
 
+
                 <Row>
                     <Col sm={{size: '4', offset: 8}}>
                 {(this.state.type === '0') && <Button
                                     style={{marginTop : 20}}
-                                     disabled={!this.state.formIsValid}
+                                     //disabled={!this.state.formIsValid}
                                      onClick={this.handleAdd}> Add </Button>}
                 {(this.state.type === '1') && <Button
                                     style={{marginTop : 20}}

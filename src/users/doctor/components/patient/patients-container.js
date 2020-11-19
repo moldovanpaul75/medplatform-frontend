@@ -10,19 +10,25 @@ import {
     ModalHeader,
     Row
 } from "reactstrap";
-import _ from "lodash";
+import moment from "moment";
 
 import * as API_COMMON from "../../../../commons/api/common-api";
 import * as API_DOCTOR from "../../api/doctor-api";
 import TableForm from "../../../../commons/tables/table-form";
 import ModalForm from "../../../../commons/modal/modal-form";
 
+
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
-
+import LibraryBooksSharpIcon from '@material-ui/icons/LibraryBooksSharp';
+import LocalHospitalSharpIcon from '@material-ui/icons/LocalHospitalSharp';
 
 const endpoint = {
-    patient: '/patient'
+    doctor: '/doctor',
+    patient: '/patient',
+    medication: '/medication',
+    medicationPlan: '/medication_plan',
+    medicalRecord: '/medical_record'
 }
 
 
@@ -37,22 +43,33 @@ class PatientsContainer extends React.Component{
         this.state = {
             addPatient: false,
             updatePatient: false,
+            addMedicalRecord: false,
+            addMedicationPlan: false,
             patientRole: [],
+            doctorId: null,
             patientsTableData: [],
+            medicationTableData: [],
             itemToUpdate: {
                 address: [],
-                userAuthentication: []
+                userAuthentication: [],
+                medicalRecord: {
+                    id: '',
+                    releaseDate: '',
+                    details: '',
+                }
             },
-            isLoaded: false,
+            patientsLoaded: false,
+            medicationsLoaded: false,
             errorStatus: 0,
             error: null
         }
-
     }
 
     componentDidMount() {
-        this.fetchPatients();
         this.fetchPatientRole();
+        this.fetchLoggedDoctor();
+        this.fetchItems(endpoint.patient, ['patientsTableData', 'patientsLoaded']);
+        this.fetchItems(endpoint.medication, ['medicationTableData', 'medicationsLoaded']);
     }
 
     toggleForm(key){
@@ -72,21 +89,24 @@ class PatientsContainer extends React.Component{
 
     reload(key){
         this.setState({
-            isLoaded: false,
+            patientsLoaded: false,
+            medicationLoaded: false,
         });
         this.toggleForm(key);
-        this.fetchPatients();
+        this.fetchPatientRole();
+        this.fetchLoggedDoctor();
+        this.fetchItems(endpoint.patient, ['patientsTableData', 'patientsLoaded']);
+        this.fetchItems(endpoint.medication, ['medicationTableData', 'medicationsLoaded']);
     }
 
 
-    fetchPatients(){
-        return API_COMMON.getItems(endpoint.patient, (result, status, err) =>{
+    fetchItems(endpoint, states){
+        return API_COMMON.getItems(endpoint, (result, status, err) =>{
             if (result !== null && status === 200){
                 this.setState({
-                    patientTableData: result,
-                    isLoaded: true
+                    [states[0]]: result,
+                    [states[1]]: true
                 });
-                console.log(this.state.patientTableData);
             } else {
                 this.setState(({
                     errorStatus: status,
@@ -111,6 +131,23 @@ class PatientsContainer extends React.Component{
         });
     }
 
+    fetchLoggedDoctor() {
+        return API_COMMON.getProfile(endpoint.doctor, (result, status, err) =>{
+            if(result !== null && status === 200){
+                this.setState(({
+                    doctorId: result.id
+                }));
+            } else {
+                this.setState(({
+                    errorStatus: status,
+                    error: err,
+                }));
+            }
+        });
+    }
+
+
+
     handleDelete(patientId){
         return API_COMMON.deleteItem(endpoint.patient, patientId,(status, err) =>{
             if (status === 200 || status === 201){
@@ -132,6 +169,7 @@ class PatientsContainer extends React.Component{
                   <strong> Patients Management </strong>
               </CardHeader>
               <Card>
+                  <br/>
                   <Row>
                       <Col sm={{size: '8', offset: 1}}>
                           <Button color="primary" onClick={() => this.toggleForm('addPatient')}>Add patient </Button>
@@ -141,13 +179,8 @@ class PatientsContainer extends React.Component{
                   <br/>
                   <Row>
                       <Col sm={{size: '8', offset: 1}}>
-                          {this.state.isLoaded && <TableForm tableData = {this.state.patientTableData}
+                          {this.state.patientsLoaded && <TableForm tableData = {this.state.patientsTableData}
                                                              tableColumns = {[
-                                                                 {
-                                                                     Header: 'Id',
-                                                                     accessor: 'id',
-                                                                     show: false
-                                                                 },
                                                                  {
                                                                      Header: 'First Name',
                                                                      accessor: 'firstName',
@@ -181,27 +214,48 @@ class PatientsContainer extends React.Component{
                                                                      id: 'userAuthentication',
                                                                      accessor: data => {
                                                                          let auth = [];
-                                                                         auth.push('Username: '+data.userAuthentication.username)
-                                                                         auth.push('Email: '+data.userAuthentication.email)
+                                                                         auth.push('Username: '+data.userAuthentication.username);
+                                                                         auth.push('Email: '+data.userAuthentication.email);
                                                                          return (<pre>{auth.join('\n')}</pre>);
                                                                      }
                                                                  },
-
                                                                  {
-                                                                     Header: '',
+                                                                     Header: 'Update MedicalRecord',
+                                                                     Cell: row => (
+                                                                         <div>
+                                                                             <Button color="info"
+                                                                                     onClick={() => this.toggleForm2('addMedicalRecord', row.original)}
+                                                                             >{<LibraryBooksSharpIcon/>}<br/></Button>
+                                                                         </div>
+                                                                     )
+                                                                 },
+                                                                 {
+                                                                     Header: 'Add MedicationPlan',
+                                                                     Cell: row => (
+                                                                         <div>
+                                                                             <Button color="info"
+                                                                                     onClick={() => this.toggleForm2('addMedicationPlan', row.original)}
+                                                                             >{<LocalHospitalSharpIcon/>}<br/></Button>
+                                                                         </div>
+                                                                     )
+                                                                 },
+                                                                 {
+                                                                     Header: 'Actions',
                                                                      Cell: row => (
                                                                          <div>
                                                                              <Button color="primary"
                                                                                      onClick={() => this.toggleForm2('updatePatient', row.original)}
                                                                              >{<EditIcon/>}</Button>&nbsp;&nbsp;
-                                                                             <Button onClick={() => this.handleDelete(row.original.id)}>{<DeleteIcon/>}</Button>
+                                                                             <Button color="danger"
+                                                                                     onClick={() => this.handleDelete(row.original.id)}
+                                                                             >{<DeleteIcon/>}</Button>&nbsp;&nbsp;
                                                                          </div>
                                                                      )
                                                                  }
                                                              ]}
                                                              tableFilter = {
                                                                  [
-                                                                     {accessor: 'name'}
+                                                                     {accessor: 'firstName'}
                                                                  ]
                                                              }
                           />}
@@ -398,7 +452,7 @@ class PatientsContainer extends React.Component{
                                                  }
 
                                              ]
-                                         }
+                                         },
                                      ]}
                                  />
                   </ModalBody>
@@ -551,14 +605,192 @@ class PatientsContainer extends React.Component{
                                                          isRequired: true
                                                      }
                                                  },
-
-                                             ]
-                                         }
+                                         ]},
                                  ]}
                       />
                   </ModalBody>
               </Modal>
 
+              <Modal isOpen={this.state.addMedicalRecord} toggle={() => this.toggleForm('addMedicalRecord')}
+                     className={this.props.className} sizze="lg">
+                  <ModalHeader toggle={() => this.toggleForm('addMedicalRecord')}> Add medical record: </ModalHeader>
+                  <ModalBody>
+                      <ModalForm type={'0'}
+                                 endpoint = {endpoint.medicalRecord}
+                                 reloadHandler = {() => this.reload('addMedicalRecord')}
+                                 formControls = {[
+                                             {
+                                                 id: 'form',
+                                                 values: [
+                                                     {
+                                                         id: 'releaseDate',
+                                                         fieldName: 'releaseDateField',
+                                                         value: moment().format("YYYY-MM-DD"),
+                                                         placeholder: 'Release date...',
+                                                         valid: false,
+                                                         touched: false,
+                                                         display: true,
+                                                         message: 'yyyy-mm-dd',
+                                                         validationRules: {
+                                                             minLength: 10,
+                                                             isRequired: true
+                                                         }
+                                                     },
+                                                     {
+                                                         id: 'details',
+                                                         fieldName: 'detailsField',
+                                                         value: '',
+                                                         placeholder: 'Details...',
+                                                         valid: false,
+                                                         touched: false,
+                                                         display: true,
+                                                         message: 'Medical record details',
+                                                         validationRules: {
+                                                             minLength: 21,
+                                                             isRequired: true
+                                                         }
+                                                     },
+                                         ]},
+                                         {
+                                             id: 'patient',
+                                             values: [
+                                                 {
+                                                     id: 'id',
+                                                     fieldName: 'idField',
+                                                     value: this.state.itemToUpdate.id,
+                                                     display: false,
+                                                 },
+                                         ]},
+                                 ]}
+                      />
+                  </ModalBody>
+              </Modal>
+
+              <Modal isOpen={this.state.addMedicationPlan} toggle={() => this.toggleForm('addMedicationPlan')}
+                     className={this.props.className} sizze="lg">
+                  <ModalHeader toggle={() => this.toggleForm('addMedicationPlan')}> Add medication plan: </ModalHeader>
+                  <ModalBody>
+                      <ModalForm type={'0'}
+                                 endpoint = {endpoint.medicationPlan}
+                                 reloadHandler = {() => this.reload('addMedicationPlan')}
+                                 formControls = {[
+                                     {
+                                         id: 'form',
+                                         values: [
+                                             {
+                                                 id: 'dosage',
+                                                 fieldName: 'dosageField',
+                                                 value: '',
+                                                 placeholder: 'Medication dosage...',
+                                                 valid: false,
+                                                 touched: false,
+                                                 display: true,
+                                                 message: 'mg',
+                                                 validationRules: {
+                                                     minLength: 1,
+                                                     isRequired: true
+                                                 }
+                                             },
+                                             {
+                                                 id: 'start',
+                                                 fieldName: 'startField',
+                                                 value: '',
+                                                 placeholder: 'When the medication plan starts...',
+                                                 valid: false,
+                                                 touched: false,
+                                                 display: true,
+                                                 message: 'yyyy-mm-dd',
+                                                 validationRules: {
+                                                     minLength: 10,
+                                                     isRequired: true
+                                                 }
+                                             },
+                                             {
+                                                 id: 'end',
+                                                 fieldName: 'endField',
+                                                 value: '',
+                                                 placeholder: 'When the medication plan ends...',
+                                                 valid: false,
+                                                 touched: false,
+                                                 display: true,
+                                                 message: 'yyyy-mm-dd',
+                                                 validationRules: {
+                                                     minLength: 10,
+                                                     isRequired: true
+                                                 }
+                                             },
+                                             {
+                                                 id: 'morning',
+                                                 fieldName: 'morningField',
+                                                 value: '',
+                                                 valid: false,
+                                                 touched: false,
+                                                 display: true,
+                                                 message: 'true/false',
+                                                 validationRules: {
+                                                     booleanValidator: true
+                                                 }
+                                             },
+                                             {
+                                                 id: 'afternoon',
+                                                 fieldName: 'afternoonField',
+                                                 value: '',
+                                                 valid: false,
+                                                 touched: false,
+                                                 display: true,
+                                                 message: 'true/false',
+                                                 validationRules: {
+                                                     booleanValidator: true
+                                                 }
+                                             },
+                                             {
+                                                 id: 'evening',
+                                                 fieldName: 'eveningField',
+                                                 value: '',
+                                                 valid: false,
+                                                 touched: false,
+                                                 display: true,
+                                                 message: 'true/false',
+                                                 validationRules: {
+                                                     booleanValidator: true
+                                                 }
+                                             },
+                                         ]
+                                     },
+                                     {
+                                         id: 'patient',
+                                         values: [
+                                             {
+                                                 id: 'id',
+                                                 fieldName: 'idField',
+                                                 value: this.state.itemToUpdate.id,
+                                                 display: false,
+                                             },
+                                         ]
+                                     },
+                                     {
+                                         id: 'doctor',
+                                         values: [
+                                             {
+                                                 id: 'id',
+                                                 fieldName: 'idField',
+                                                 value: this.state.doctorId,
+                                                 display: false,
+                                             },
+                                         ]
+                                     },
+                                 ]}
+                                 multiselectDropDown = {{
+                                     name: 'medication',
+                                     displayValue: 'name',
+                                     values: [],
+                                     options: this.state.medicationTableData,
+                                     selectionLimit: 1
+                                    }
+                                 }
+                      />
+                  </ModalBody>
+              </Modal>
 
           </div>
         );

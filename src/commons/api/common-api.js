@@ -20,7 +20,7 @@ function getProfile(path, callback){
         method: 'GET',
         headers: buildHeaders(),
     });
-     RestApiClient.performRequest(request, callback);
+    RestApiClient.performRequest(request, callback);
 }
 
 
