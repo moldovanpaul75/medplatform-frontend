@@ -8,7 +8,7 @@ cache:
 
 variables:
   CI: ""
-  APP_NAME: react-demo-ds2020
+
 
 build:
   image: docker:latest
@@ -21,6 +21,10 @@ build:
     - docker build --cache-from $CI_REGISTRY_IMAGE:latest --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA --tag $CI_REGISTRY_IMAGE:latest .
     - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
     - docker push $CI_REGISTRY_IMAGE:latest
+
+
+variables:
+  APP_NAME: imed-platform
 
 
 deploy:
