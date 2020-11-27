@@ -17,101 +17,128 @@ import MedicationPlansContainer from "./users/doctor/components/medication-plan/
 import CaregiverPatientsContainer from "./users/caregiver/components/caregiver-patients-container";
 import PatientMedicalInfo from "./users/patient/components/patient-medical-info";
 
+import AuthenticationService from "./login/service/authentication-service";
 
 class App extends React.Component {
+
+    // constructor(props) {
+    //     super(props);
+    //
+    //     this.state = {
+    //         notifications: []
+    //     };
+    //
+    //     this.handleNotifications = this.handleNotifications.bind(this);
+    // }
+    //
+    // handleNotifications(notification){
+    //     this.setState(prevState => ({
+    //         notifications: [...prevState.notifications, notification]
+    //     }));
+    //     console.log(this.state.notifications);
+    // }
+    //
+    // componentDidMount() {
+    //     if(AuthenticationService.isUserLoggedIn() && AuthenticationService.getUserRole() === "ROLE_caregiver"){
+    //         wsMiddleware.connect(this.handleNotifications);
+    //     }
+    //     console.log(this.state.notifications);
+    // }
 
 
     render() {
         return (
+
             <div className={styles.back}>
                 <Router>
                     <div>
-                    <NavigationBar />
-                    <Switch>
-
-                        <Route
-                            exact
-                            path='/'
-                            render={() => <Home/>}
+                        <NavigationBar
+                            //notifications={this.state.notifications}
                         />
+                        <Switch>
 
-                        <AuthenticatedRoute
-                            path='/login'
-                            component={LoginComponent}
-                        />
+                            <Route
+                                exact
+                                path='/'
+                                render={() => <Home/>}
+                            />
 
-                        {/*Error*/}
-                        <Route
-                            exact
-                            path='/error'
-                            render={() => <ErrorPage/>}
-                        />
+                            <AuthenticatedRoute
+                                path='/login'
+                                component={LoginComponent}
+                            />
 
-                        {/*Profiles*/}
-                        <RoleRoute
-                            userRole="ROLE_doctor"
-                            path='/doctor'
-                            component={() => <ProfileForm path='/doctor'/>}
-                        />
+                            {/*Error*/}
+                            <Route
+                                exact
+                                path='/error'
+                                render={() => <ErrorPage/>}
+                            />
 
-                        <RoleRoute
-                            userRole="ROLE_patient"
-                            path='/patient'
-                            component={() => <ProfileForm path='/patient'/>}
-                        />
+                            {/*Profiles*/}
+                            <RoleRoute
+                                userRole="ROLE_doctor"
+                                path='/doctor'
+                                component={() => <ProfileForm path='/doctor'/>}
+                            />
 
-                        <RoleRoute
-                            userRole="ROLE_caregiver"
-                            path='/caregiver'
-                            component={() => <ProfileForm path='/caregiver'/>}
-                        />
+                            <RoleRoute
+                                userRole="ROLE_patient"
+                                path='/patient'
+                                component={() => <ProfileForm path='/patient'/>}
+                            />
 
-
-                        {/*Doctor functionalities*/}
-                        <RoleRoute
-                            userRole="ROLE_doctor"
-                            path='/medications'
-                            component={MedicationContainer}
-                        />
-
-                        <RoleRoute
-                            userRole="ROLE_doctor"
-                            path='/patients'
-                            component={PatientsContainer}
-                        />
-
-                        <RoleRoute
-                            userRole="ROLE_doctor"
-                            path='/caregivers'
-                            component={CaregiversContainer}
-                        />
-
-                        <RoleRoute
-                            userRole="ROLE_doctor"
-                            path='/medication_plans'
-                            component={MedicationPlansContainer}
-                        />
+                            <RoleRoute
+                                userRole="ROLE_caregiver"
+                                path='/caregiver'
+                                component={() => <ProfileForm path='/caregiver'/>}
+                            />
 
 
-                        {/*Caregiver functionalities*/}
-                        <RoleRoute
-                            userRole="ROLE_caregiver"
-                            path='/caregiver_patients'
-                            component={CaregiverPatientsContainer}
-                        />
+                            {/*Doctor functionalities*/}
+                            <RoleRoute
+                                userRole="ROLE_doctor"
+                                path='/medications'
+                                component={MedicationContainer}
+                            />
+
+                            <RoleRoute
+                                userRole="ROLE_doctor"
+                                path='/patients'
+                                component={PatientsContainer}
+                            />
+
+                            <RoleRoute
+                                userRole="ROLE_doctor"
+                                path='/caregivers'
+                                component={CaregiversContainer}
+                            />
+
+                            <RoleRoute
+                                userRole="ROLE_doctor"
+                                path='/medication_plans'
+                                component={MedicationPlansContainer}
+                            />
 
 
+                            {/*Caregiver functionalities*/}
+                            <RoleRoute
+                                userRole="ROLE_caregiver"
+                                path='/caregiver_patients'
+                                component={CaregiverPatientsContainer}
+                            />
 
-                        <RoleRoute
-                            userRole="ROLE_patient"
-                            path='/medical_info'
-                            component={() => <PatientMedicalInfo />}
-                        />
 
-                        <Route component={ErrorPage} />
-                    </Switch>
-                </div>
-            </Router>
+                            <RoleRoute
+                                userRole="ROLE_patient"
+                                path='/medical_info'
+                                component={() => <PatientMedicalInfo/>}
+                            />
+
+                            <Route component={ErrorPage}/>
+                        </Switch>
+                    </div>
+                </Router>
             </div>
         )
     };

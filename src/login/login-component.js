@@ -74,11 +74,10 @@ class LoginComponent extends React.Component{
     loginUser(user){
         return API_LOGIN.postLogin(user, (result, status, error) => {
            if(result != null && (status === 200 || status === 201)) {
-               console.log("Successfully sign in: " + JSON.stringify(result.username) + " " + JSON.stringify(result.roles) + JSON.stringify(result.id));
+               //console.log("Successfully sign in: " + JSON.stringify(result.username) + " " + JSON.stringify(result.roles) + JSON.stringify(result.id));
 
                AuthenticationService.registerLogin(result.username, result.token, result.roles, result.id)
 
-               console.log(result.id)
                this.setState(({
                    errorStatus: 0,
                    error: null,
