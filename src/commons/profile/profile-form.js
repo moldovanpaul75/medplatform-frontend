@@ -2,7 +2,6 @@ import React from 'react'
 import {Form, FormGroup, Input, Label, Col} from "reactstrap";
 import * as API_PROFILE from "../api/common-api";
 
-
 class ProfileForm extends React.Component {
 
     constructor(props) {

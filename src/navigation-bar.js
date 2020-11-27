@@ -1,6 +1,8 @@
 import React from 'react'
 import logo from './commons/images/icon2.png';
 import AuthenticationService from './login/service/authentication-service.js'
+import * as wsMiddleware from "./wsMiddleware/wsMiddleware";
+
 
 import {
     DropdownItem,
@@ -13,14 +15,15 @@ import {
     UncontrolledDropdown,
     Button
 } from 'reactstrap';
-
+import Notifications from "react-notifications-menu";
 
 const textStyle = {
     color: 'white',
     textDecoration: 'none'
 };
 
-const NavigationBar = () => (
+
+const NavigationBar = (props) => (
     <div>
         <Navbar color="dark" light expand="md">
             <NavbarBrand href="/">
@@ -28,6 +31,9 @@ const NavigationBar = () => (
                     src={logo} width={"50"}
                      height={"50"} />
             </NavbarBrand>
+            {AuthenticationService.isUserLoggedIn() && (AuthenticationService.getUserRole() === "ROLE_caregiver") && wsMiddleware.connect()}
+
+            {AuthenticationService.isUserLoggedIn() && AuthenticationService.getUserRole()==="ROLE_caregiver" && <Notifications data={wsMiddleware.getMessages()}/>}
 
             {AuthenticationService.isUserLoggedIn() && (AuthenticationService.getUserRole() === "ROLE_doctor") &&
             <UncontrolledDropdown nav inNavbar>
