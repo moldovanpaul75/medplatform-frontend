@@ -8,9 +8,9 @@ function buildHeaders(){
         'Accept': 'application/json',
         'Content-Type': 'application/json',
     })
-    // if(AuthenticationService.isUserLoggedIn()){
-    //     headers.append('Authorization', AuthenticationService.createJWTToken())
-    // }
+    if(AuthenticationService.isUserLoggedIn()){
+        headers.append('Authorization', AuthenticationService.createJWTToken())
+    }
     return headers;
 }
 
