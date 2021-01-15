@@ -23,7 +23,6 @@ build:
     - docker push $CI_REGISTRY_IMAGE:latest
 
 variables:
-  CI: ""
   APP_NAME: imed-platform
 
 deploy:
