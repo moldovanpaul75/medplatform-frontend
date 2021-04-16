@@ -1,3 +1,3 @@
-# DS2020_30641_Moldovan_Paul_Assignment_1_Frontend
+# medplatfrom
 
-DS2020 Assignment 1 Frontend
+Medical Platform Project Frontend (ReactJs)
